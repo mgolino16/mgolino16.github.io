@@ -1,0 +1,41 @@
+#main section.one{
+	background-image: url('../../images/Illuso/IllusoStart.png');
+	height:75vh;
+	padding:0;
+}
+
+.storyImage{
+	max-height: 75%;
+	margin-bottom:2em;
+	max-width:75%;
+}
+
+.indexLink{
+	text-decoration: none;
+    color: inherit;
+    border-bottom: none;
+    -moz-transition: color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+    -webkit-transition: color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+    -ms-transition: color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+    transition: color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+    outline: 0;
+}
+
+.indexLink:hover{
+	color: #fc5f7f;
+    border-bottom-color: rgba(255, 255, 255, 0);
+}
+
+.homeIconLink{
+	padding-right: 50%;
+}
+
+.caption{
+	font-size:15px;
+	margin-top:-3em;
+}
+
+.avatarIcon{
+	width:96px;
+	height:96px;
+}

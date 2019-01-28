@@ -112,7 +112,6 @@
 							<p class="textAlignColumn">From the very start of the project we began with questions. The prompt was incredibly open-ended and a lot more abstract for conducting research than simply testing existing user interfaces or customer interactions. In addition, the area of voice interaction technology was completely new to us, and not very well researched across the industry in general, so we clearly had our research work cut out for us. At our first meeting we did a full-on brainstorm of every possible question we would like to know the answer to, these ranged from questions about the experience and process of Moe’s customers in the restaurant to questions about the nature of voice interaction and what makes one successful. We then categorized these questions into appropriate categories, some of which demanded us going off and conducting <b>scholarly research and competitive analyses</b> and some of which simply involved talking to the Moe’s representatives to gather demographic and product data they already had.</p>
 
 
-							<img class="storyImage" src="images/Moes/FirstStickySesh1.jpg" alt="" />
 							<img class="storyImage" src="images/Moes/FirstStickySesh2.jpg" alt="" />
 							<img class="storyImage" src="images/Moes/FirstStickySesh3.jpg" alt="" />
 							<p class="caption">Our first sticky note brainstorm session, wherein we organized all the questions we wanted to answer</p>
@@ -180,10 +179,9 @@
 							
 							<p class="textAlignColumn">For the <b>observation sessions</b> our team of four broke into two groups of two, executing two hour long stays in the new Moe’s at distinctly different times of day. The first group went on a Thursday evening, when crowds were low and only a few customers entered at a time. The second group went on a Moe’s Monday during lunch time, one of the peak traffic times for the franchise. Observations gathered ranged from how people experienced the new eating space to the reception and ordering choices regarding to the new menu.</p>
 
-							<img class="storyImage" src="images/Moes/NewMoes3.jpg" alt="" />
-							<img class="storyImage" src="images/Moes/NewMoes4.jpg" alt="" />
 							<img class="storyImage" src="images/Moes/NewMoes5.jpg" alt="" />
-							<p class="caption">Some more shots from the new Moe's, including one of the team getting firsthand experience with the new menu items</p>
+							<img class="storyImage" src="images/Moes/NewMoes4.jpg" alt="" />
+							<p class="caption">Some more shots from the new Moe's from our observation sessions</p>
 
 							<p class="textAlignColumn">The <b>interview</b> with the Moe’s employee was actually very interesting. When we first visited the new Moe’s location, I personally recognized one of the chefs behind the counter as a close friend that I had lost touch with after undergrad. He warmly greeted me and using that personal connection I was able to arrange an interview with him outside of working hours (I also subsequently helped him work on his car). The interview was semi-structured with some major questions we wanted answered predefined and leaving it open to me as the interviewer to dig in deeper on any interesting responses.</p>
 
@@ -230,7 +228,6 @@
 
 							<img class="storyImage" src="images/Moes/AffMap1.jpg" alt="" />
 							<img class="storyImage" src="images/Moes/AffMap2.jpg" alt="" />
-							<img class="storyImage" src="images/Moes/AffMap3.jpg" alt="" />
 							<img class="storyImage" src="images/Moes/AffMap4.jpg" alt="" />
 							<p class="caption">Affinity map pics</p>
 
@@ -240,19 +237,22 @@
 
 							<p class="textAlignColumn">Next, we crafted a demo video of what an idealized interaction with the voice ordering system may look like. The purpose of this was to show what an optimal voice experience might look like, bringing the more abstract guidelines into tangible examples. Again, we viewed this as a very valuable deliverable that our industry partner could show to any future developers and clearly transmit the most important ideas the system should invoke. We used a tool called “BotSociety” to mockup the automated interactions and it’s worth noting that this video put aside any technical limitations a real system may have.</p>
 
-							<img class="storyImage" src="images/Moes/BotSociety1.jpg" alt="" />
-							<img class="storyImage" src="images/Moes/BotSociety2.jpg" alt="" />
+							<img class="storyImage" src="images/Moes/BotSociety1.png" alt="" />
+							<img class="storyImage" src="images/Moes/BotSociety2.png" alt="" />
 							<p class="caption">The BotSociety tool we used to create our demo video</p>
 
 							<p class="textAlignColumn">Finally, it was time to attempt creating an actual prototype voice interface. I suggested a tool known as Dialog Flow that was created by Google to be used with their Google Home Assistant technology. The allure of the Dialog Flow tool was a programable voice recognition and response software that was based on AI and machine learning to get smarter with more training. In order to create an AI agent for our purposes we needed to transform the Moe’s menu into a hierarchical <b>information architecture</b>. We spent a long time brainstorming exactly how the ordering process should proceed and then created a diagram detailing our proposed architecture this would go on to be the third deliverable in the project.</p>
+							
 
-							<img class="storyImage" src="" alt="" />
-							<p class="caption">brainstorming and chart</p>
+							<img class="storyImage" src="images/Moes/InfArch1.jpg" alt="" />
+							<img class="storyImage" src="images/Moes/IAChart.png" alt="" />
+							<p class="caption">Brainstorming the information architecture and the final chart deliverable</p>
 
 							<p class="textAlignColumn">Then, due to my background in computer engineering and software, I single-handedly undertook the process of understanding and <b>programming the prototype</b> AI voice agent. I won’t drag into the technical details, but there was a definite learning curve and certainly a number of technical challenges in the implementation process that restricted how robust the prototype could be in comparison to our ideal system. However, in the end, while not perfect, the voice agent lent itself to fairly successful interactions.</p>
 
-							<img class="storyImage" src="" alt="" />
-							<p class="caption">Dialog FLow</p>
+							<img class="storyImage" src="images/Moes/DialogFlow1.png" alt="" />
+							<img class="storyImage" src="images/Moes/DialogFlow2.png" alt="" />
+							<p class="caption">Some screenshots from the implementation and training of the DialogFlow AI. This strongly relied on the information architecture we designed.</p>
 
 
 							<p class="textAlignColumn">Once a working system existed, we had one final task to accomplish before presenting our work to our industry partner: executing user testing and <b>expert heuristic analysis</b>. In order to do this, we designed a set metrics that our prototype could be measured against and would illicit valuable feedback from our testers. Then, we reached out to two expert researchers within Georgia Tech who could individually evaluate our system. The first expert was Dr. Bruce Walker, head of the Sonification Lab at GT, and our second expert was one of the PhD students that worked alongside Dr. Walker in his lab. Their expertise revolved directly around audio and vocal user interface design and they were happy to lend their time and attention to evaluating our system.</p>
@@ -261,14 +261,15 @@
 
 							<p class="textAlignColumn">Finally, every team member conducted and recorded much more concise user testing of the prototype with non-expert individuals to gather feedback from lay-people that were closer to actual users of the proposed system. Again, recordings were reviewed, and insights integrated into our guidelines as we prepared our final presentation.</p>
 
-							<img class="storyImage" src="" alt="" />
-							<p class="caption">Evaluation Chart + Bruce Walker</p>
+							<img class="storyImage" src="images/Moes/HeuristicChart.png" alt="" />
+							<img class="storyImage" src="images/Moes/Bruce.jpg" alt="" />
+							<p class="caption">A completed heuristic evaluation chart and the esteemed Dr. Bruce Walker</p>
 
 
 							<p class="textAlignColumn">In the end, I delivered the final presentation of all of our work to the industry partners and we handed off all of our deliverables so they could use them in future endeavors. It is important to recognize that to continue had the timeframe for the project been longer, we would have <b>iterated</b> on and improved our prototype design, followed by further testing and reworking, but due to the time constraints of the semester drawing to a close, the project too came to an end here. </p>
 
-							<img class="storyImage" src="" alt="" />
-							<p class="caption">presentation pic</p>
+							<img class="storyImage" src="images/Moes/FinalPres.png" alt="" />
+							<p class="caption">First screen of our final presentation to our industry partner</p>
 
 
 							<h3>Conclusion</h3>
@@ -288,22 +289,20 @@
 
 
 
-							<img class="storyImage" src="" alt="" />
-							<p class="caption">Caption Holder Here</p>
+							<img class="storyImage" src="images/Moes/FirstStickySesh1.jpg" alt="" />
+							<p class="caption">The first of many team meetings and brainstorming sessions</p>
 
-							<img class="storyImage" src="" alt="" />
-							<p class="caption">Caption Holder Here</p>
+							<img class="storyImage" src="images/Moes/NewMoes3.jpg" alt="" />
+							<p class="caption">The team trying out some of the new Moe's menu items</p>
 
-							<img class="storyImage" src="" alt="" />
-							<p class="caption">Caption Holder Here</p>
+							<img class="storyImage" src="images/Moes/PDCardActivity1.jpg" alt="" />
+							<p class="caption">Two team members and two participants working through one of the workshop activities</p>
 
-							<img class="storyImage" src="" alt="" />
-							<p class="caption">Caption Holder Here</p>
+							<img class="storyImage" src="images/Moes/CodyNotes4.jpg" alt="" />
+							<p class="caption">One of many pages of notes from one team member during the participatory design workshop</p>
 
-							<img class="storyImage" src="" alt="" />
-							<p class="caption">Caption Holder Here</p>
-
-			
+							<img class="storyImage" src="images/Moes/AffMap3.jpg" alt="" />
+							<p class="caption">Having fun with affinity mapping</p>
 
 						<footer class ="more_projects_button">
 							<a class="button scrolly" href="#top"> 

@@ -74,7 +74,7 @@
 							<header>
 								<h1>Infinity</h1> <!--MAKE COOL FONT -->
 								
-								<iframe width="560" height="315" src="https://www.youtube.com/embed/MOO9wAad2QA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/liJuwtJoBMw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 								<h2>Introduction</h2>
 								 
@@ -82,15 +82,16 @@
 								<p class="textAlignColumn">This project was originally created for a class on Embedded Systems Design with professor James Hamblen. The course was centered around learning how to develop working systems using microcontrollers and a variety of input sensors and output devices. Over the course of the semester students were tasked with mastering a variety of skills from hardware design and wiring, to C++ programing. The course featured challenges including writing and implementing a device driver for a new input microphone peripheral and using multithreading on an Mbed microcontroller to synchronize an array of output media.</p>
 
 								<h3>Overview</h3>
-								<p class="textAlignColumn"> The project known as <b>Infinity</b> was the final project of the semester and was entirely open-ended, with the only requirement being to showcase a variety of skills and knowledge from different aspects of the course in a single, interesting creation. Most groups opted for trivial projects with no real value outside of the intellectual challenge of the course. My partner and I opted to create something that we actually wanted to feature and display as a practical and stunning entertainment device: a sound reactive infinity mirror.</p>
+								<p class="textAlignColumn"> The project known as <b>Infinity</b> was the final project of the semester and was entirely open-ended, with the only requirement being to showcase a variety of skills and knowledge from different aspects of the course in a single, interesting, creation. Most groups opted for trivial projects with no real value outside of the intellectual challenge of the course. My partner and I opted to create something that we actually wanted to feature and display as a practical and stunning entertainment device: a sound reactive infinity mirror.</p>
 
-								<p class="textAlignColumn">An infinity mirror is the name given to the effect when you take a mirror and a two-way mirror and place them in an enclosed space, so they reflect towards each other, then turn on a light source in between them. The effect is similar to when you stand in a bathroom between two mirrors and you try to move out of the way to see the edge of the reflection that appears to go on forever, except in the case of the infinity mirror you are standing on the outside and can see directly into the abyss by viewing through the tinted two-way mirror.</p>
+								<p class="textAlignColumn">An infinity mirror is the name given to the effect achieved when you take a regular mirror and a two-way mirror and place them in an enclosed space, so they reflect towards each other, then turn on a light source in between them. The effect is similar to when you stand in a bathroom between two mirrors and you try to move out of the way to see the edge of the reflection that appears to go on forever, except in the case of the infinity mirror you are standing on the outside and can see directly into the abyss by viewing through the tinted two-way mirror.</p>
 
 								<img class="storyImage" src="images/Infinity/InfinityDiagram.jpg" alt="" />
 								<p class="caption">Diagram of how an infinity mirror works</p>
+								<p class="textAlignColumn"></p>
 
 								<h3>Contribution</h3>
-								<p class="textAlignColumn">I worked on this project with one other individual, a close friend and classmate in the course. While we both leaned on each other when we hit roadblocks, for the most part we separated the work so that I mainly worked on the software and he mainly worked on the hardware. What this meant was that I designed and implemented all the <b>human interfaces</b> and <b>information architecture</b> presented to the user, this included the C++ code that enabled switching between different input modes as well as developing a <b>mobile app</b> that connected to a Bluetooth chip and acted as a remote control for the device.</p>
+								<p class="textAlignColumn">I worked on this project with one other individual, a close friend and classmate in the course. While we both leaned on each other when we hit roadblocks, for the most part we separated the work so that I mainly worked on the software and he mainly worked on the hardware. What this meant was that I designed and implemented all the <b>human interfaces</b> and <b>information architecture</b> presented to the user, this included the C++ code that enabled switching between different input modes as well as developing a <b>mobile iOS app</b> that connected to a Bluetooth chip and acted as a remote control for the device.</p>
 								
 							</header>
 
@@ -105,8 +106,62 @@
 							<header>
 								<h2>Story</h2>
 
-								<h2>This Page Currently Under Construction</h2>
+								<p class="textAlignColumn">We began the project by doing research and looking for inspiration. A simple google search of ‘infinity mirror’ will yield some pretty beautiful displays of craftsmanship ranging in size from desk ornaments to entire living room tables made of the infinite electroluminescent displays. We set our targets on something that could be a wall mounted decoration piece that would last beyond the duration of the course (and to this day I have our final creation hanging in my home). </p>
+
+								<p class="textAlignColumn">However, through our research we found that at the time, nobody else had created (or at least shared) information on building a sound reactive experience like we envisioned. We would have to take aspects of other sound reactive LED projects and tailor them to fit our design.</p>
+
 								<p class="textAlignColumn"></p>
+
+								<img class="storyImage" src="images/Infinity/infiniteinspiration1.jpg" alt="" />
+								<img class="storyImage" src="images/Infinity/infiniteinspiration2.jpg" alt="" />
+								<img class="storyImage" src="images/Infinity/infiniteinspiration3.jpg" alt="" />
+								<p class="caption">Some cool pictures of inspiration projects found online.</p>
+
+
+								<p class="textAlignColumn">The next step was to outline the <b>human affordances</b> our project would need in terms of control and input. The simplest solution would be to have an aux cable plug right into the analog input of the microcontroller, process the audio data with a Fast Fourier Transform (FFT) algorithm, and light up the display in sync. However, this drastically limited usability of the device, and didn’t allow for users to actually hear the music the mirror was reacting to.</p>
+
+								<p class="textAlignColumn">So, we considered adding an aux output for the device. This would allow a user to plug their phone into the system, have the audio processed for display in a relatively lossless manner, and then allow for the same audio stream to be output to speakers that the user could plug in. Not a bad solution and in fact one of the features that was implemented in the final design.</p>
+
+								<p class="textAlignColumn"></p>
+
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/WcrezXirxCs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+								<p class="textAlignColumn">However, when considering the situations that a user may actually want to show off this device, we knew we could do better. For instance, what if the room the mirror was featured in had a better or more convenient speaker system than whatever could be plugged into the aux output? What if the location of the mounted display was just inconveniently positioned to always deal with plugging wires in and out? The solution we reached was that the system should have a microphone input. Such an implementation would allow for the device to be more versatile and be placed into any space the user envisioned without restrictions based on input and output accessibility. </p>
+
+								<p class="textAlignColumn">It took a lot of time to calibrate correctly, but through repeated <b>testing</b> we were able to implement a working microphone input. The other fun side of this input was that it would respond not just to music from a speaker, but actually any noise in the room such as voices or live instruments.</p>
+
+								<p class="textAlignColumn"></p>
+
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/O0IN5spcz8s" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+								<p class="textAlignColumn">But we still weren’t done! </p>
+
+								<p class="textAlignColumn">With a magical mirror box filled with LEDs, we envisioned that it would be cool to control the lights themselves, separate from sound. The simplest way to achieve this would be to give a user access to three controls, each adjusting the value of Red, Green, or Blue light in the LED array. </p>
+
+								<p class="textAlignColumn">At first, we imagined a physical interface with three dials would be a good solution to controlling the colors, but as we began to analyze the system, we realized there would also need to be a way to switch between the different modes of input (aux, microphone, and manual RGB control). We could make a box with a lot of switches, knobs, and labels, but it just began to become more and more complicated to wire the hardware and also seemed like a rather clumsy <b>user experience</b> to have to get up and walk over to the mirror every time you wanted to make a color or input adjustment. So, we explored the possibility of implementing a simple Bluetooth module so we could control the system from a phone. Thus, the phone app idea was born. </p>
+
+								<p class="textAlignColumn"></p>
+
+								<iframe width="560" height="315" src="https://www.youtube.com/embed/MOO9wAad2QA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+								<p class="textAlignColumn">It took weeks of trial and error to get the system working correctly. This process included frying circuits at 3AM and accidentally cracking the custom glass pane after an all-nighter getting the code to work (yes tears were shed). We meticulously calibrated the microphone potentiometer, I coded my first iOS app and learned how to initiate Bluetooth communication, and we performed basic user testing with some friends (often to the tune of “Wow this is so cool!”). But we eventually created something we could be proud of and even managed to impress our professor with it!</p>
+
+
+								<p class="textAlignColumn"></p>
+								<img class="storyImage" src="images/Infinity/crackedGlass.jpg" alt="" />
+								<p class="caption">A temporary repair to the cracked glass. Yes, it was eventually replaced!</p>
+
+								<p class="textAlignColumn"></p>
+								<h3>Takeaways</h3>
+								<p class="textAlignColumn">Overall, this was a really fun project to work on and while some seasoned engineers might view our creation as simple, it was a milestone accomplishment of learning in my early design career and a project I can say I was truly passionate about bringing to life from the moment ideation began.</p>
+
+								<p class="textAlignColumn"></p>
+								<h3>Future Work</h3>
+								<p class="textAlignColumn">Since the time of the project, the iOS app I originally built has long since become outdated and unusable, but I wanted to keep this project alive and on display. I recently rebuilt the entire circuit and codebase from scratch using an Arduino Uno microcontroller and eliminated some of the features that went unused (aux cable input and output) for simplicity and decoupled the design from the app dependence so that future iterations of the code would not need to be updated every time Apple released a new OS. If I do say so myself, it looks better than ever and is hanging up in my apartment as a spectacular decoration of engineering and light.</p>
+
+								<p class="textAlignColumn"></p>
+								<img class="storyImage" src="images/Infinity/finalMirror.jpg" alt="" />
 
 
 							</header>
@@ -121,6 +176,24 @@
 
 							<header>
 								<h2>Gallery</h2>
+
+
+								<img class="storyImage" src="images/Infinity/circuitGlam1.jpg" alt="" />
+								<img class="storyImage" src="images/Infinity/circuitGlam2.jpg" alt="" />
+
+								<p class="caption">Some sexy closeups of the circuit, featuring a microphone, aux input and output ports, the bluetooth chip, and mosfets!</p>
+								<p class="textAlignColumn"></p>
+
+								<img class="storyImage" src="images/Infinity/circuitUpgrade.jpg" alt="" />
+
+								<p class="caption">The much simplified and improved Arduino Uno circuit upgrade.</p>
+								<p class="textAlignColumn"></p>
+
+								<img class="storyImage" src="images/Infinity/wallMounted.jpg" alt="" />
+
+								<p class="caption">There she is, currently mounted on my wall, ready to perform!</p>
+
+
 							</header>
 
 

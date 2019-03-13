@@ -42,5 +42,24 @@
 	text-align: left;
 	margin-left:12.5%;
 	margin-right:12.5%;
+	font-size: 0.8em;
 
+}
+
+.methodHeader{
+	padding-bottom: 2%;
+}
+
+h1{
+	font-size: 2.5em;
+    font-weight: bold;
+    margin:0px;
+}
+
+h2{
+	font-size: 2em;
+}
+
+h3{
+	font-size: 1.5em;
 }

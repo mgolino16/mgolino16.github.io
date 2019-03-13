@@ -98,3 +98,11 @@
 	width:96px;
 	height:96px;
 }
+
+.textAlignColumnMainPage{
+	text-align: left;
+	margin-left:12.5%;
+	margin-right:12.5%;
+	font-size: 0.8em;
+
+}

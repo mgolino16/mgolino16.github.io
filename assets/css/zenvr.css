@@ -1,0 +1,9 @@
+#main section.one{
+	background-image: url('../../images/ZenVR/ZenVRCover.png');
+	height:75vh;
+	padding:0;
+}
+
+.methodHeader{
+	padding-bottom: 2%;
+}

@@ -3,6 +3,12 @@
 	background-image: url('../../images/HomePage/banner.jpg');
 }
 
+#portraitImage{
+	max-height: 25%;
+	margin-bottom:2em;
+	max-width:25%;
+}
+
 .grid {
     overflow: hidden;
     /*background: #183b50;*/
@@ -105,4 +111,15 @@
 	margin-right:12.5%;
 	font-size: 0.8em;
 
+}
+
+/*These styles were created for the font-awesome upgrade - which is in effect in some places in the site*/
+/*They override the very specific items in the left nav bar with the flex and align right classes*/
+#nav ul li a.flex{
+	display: flex;
+	align-items: center;
+}
+
+#nav ul li a .alignRight{
+	margin-left: auto;
 }

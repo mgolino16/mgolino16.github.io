@@ -1,6 +1,11 @@
 @charset "UTF-8";
 @import url("font-awesome.min.css");
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300italic,400,600");
+@import url("../fontawesome/css/fontawesome.min.css");
+@import url("../fontawesome/css/solid.min.css");
+@import url("../fontawesome/css/brands.min.css");
+
+
 /*
 	Prologue by HTML5 UP
 	html5up.net | @ajlkn
@@ -86,8 +91,8 @@ body {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 19pt;
   font-weight: 300;
-  line-height: 1.75em;
-  color: #888;
+  line-height: 1.25em;
+  color: #000;
 }
 body.is-preload *, body.is-preload *:before, body.is-preload *:after {
   -moz-animation: none !important;
@@ -1684,7 +1689,7 @@ button:active,
 #nav ul li {
   padding-left: 0;
 }
-#nav ul li a {
+#nav ul li a{
   display: block;
   padding: 0.5em 1.5em 0.5em 1.5em;
   color: rgba(255, 255, 255, 0.5);

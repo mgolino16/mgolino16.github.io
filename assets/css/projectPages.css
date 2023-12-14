@@ -28,8 +28,8 @@
 .caption{
 	font-size:15px;
 	margin-top:-3em;
-	margin-left:12.5%;
-	margin-right:12.5%;
+	margin-left:20%;
+	margin-right:20%;
 	line-height: 20px;
 }
 
@@ -40,8 +40,8 @@
 
 .textAlignColumn{
 	text-align: left;
-	margin-left:12.5%;
-	margin-right:12.5%;
+	margin-left:20%;
+	margin-right:20%;
 	font-size: 0.8em;
 
 }
@@ -62,4 +62,13 @@ h2{
 
 h3{
 	font-size: 1.5em;
+}
+
+
+.flex{
+	display: flex;
+}
+
+.alignRight{
+	margin-left: auto;
 }

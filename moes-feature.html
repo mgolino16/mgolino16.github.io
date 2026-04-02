@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moe's Voice Interaction | Matt Golino</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        :root {
+            --moes-red: #d64a2b;
+            --moes-gold: #f4b548;
+            --moes-ink: #3a312b;
+            --moes-muted: #6d5e54;
+            --moes-border: rgba(214, 74, 43, 0.16);
+            --moes-tag-bg: rgba(214, 74, 43, 0.08);
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--moes-ink); background: #fff; }
+        .nav-shell { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; }
+        .nav-brand { display: inline-flex; align-items: center; gap: 0.7rem; color: #0f172a; text-decoration: none; justify-self: start; min-width: 0; }
+        .nav-brand:hover { color: #334155; }
+        .nav-brand img { height: 38px; width: auto; display: block; flex-shrink: 0; }
+        .nav-brand-text { font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; white-space: nowrap; }
+        .toc-link { transition: all 0.2s ease; border-left: 2px solid transparent; }
+        .toc-link:hover { border-left-color: #cbd5e1; color: #0f172a; }
+        .toc-link.active { border-left-color: var(--moes-red); color: #0f172a; font-weight: 500; }
+        .case-study-image { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; box-shadow: 0 8px 28px rgba(15, 23, 42, 0.1); }
+        .case-study-image--contain { object-fit: contain !important; background: rgba(255, 247, 239, 0.95); padding: 0.35rem; }
+        .content-section { scroll-margin-top: 100px; }
+        .banner-hero { position: relative; box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.55); }
+        .banner-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to right, rgba(58, 49, 43, 0.14), rgba(58, 49, 43, 0.03)), linear-gradient(to top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)); pointer-events: none; }
+        .project-header { background: linear-gradient(to bottom, rgba(255, 247, 239, 0.96), #fff 82%); border-top: 1px solid var(--moes-border); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 10px 24px rgba(58, 49, 43, 0.05); }
+        .project-header-shell { position: relative; }
+        .project-header-shell::before { content: ""; display: block; width: 96px; height: 2px; background: rgba(214, 74, 43, 0.35); margin-bottom: 1.25rem; border-radius: 999px; }
+        .project-label { color: var(--moes-red); letter-spacing: 0.24em; }
+        .project-title { color: var(--moes-ink); }
+        .project-subtitle, .project-meta, .project-meta-label { color: var(--moes-muted); }
+        .project-meta { color: var(--moes-ink); }
+        .project-tag { background: var(--moes-tag-bg); color: var(--moes-red); border: 1px solid rgba(214, 74, 43, 0.1); }
+        .project-button-primary { background: var(--moes-red); color: #fff; box-shadow: 0 10px 22px rgba(214, 74, 43, 0.16); }
+        .project-button-primary:hover { background: #bf3f22; }
+        .project-button-secondary { background: rgba(214, 74, 43, 0.06); color: var(--moes-red); border: 1px solid rgba(214, 74, 43, 0.12); }
+        .project-button-secondary:hover { background: rgba(214, 74, 43, 0.11); }
+        .at-a-glance { background: rgba(214, 74, 43, 0.045); border: 1px solid rgba(214, 74, 43, 0.12); border-radius: 18px; padding: 1.1rem 1.2rem; margin-bottom: 2rem; }
+        .at-a-glance h3 { color: var(--moes-red); font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem; letter-spacing: 0.01em; }
+        .at-a-glance ul { list-style: disc; margin: 0; padding-left: 1.15rem; color: var(--moes-ink); }
+        .at-a-glance li + li { margin-top: 0.45rem; }
+        .media-grid { display: grid; gap: 1.5rem; }
+        .media-grid--standard .case-study-image { aspect-ratio: 4 / 3; }
+        .media-grid--wide .case-study-image { aspect-ratio: 16 / 10; }
+        .caption { color: #64748b; font-size: 0.9rem; text-align: center; margin-top: 0.6rem; margin-bottom: 1.2rem; }
+        .story-block + .story-block { margin-top: 1.8rem; }
+        .callout { background: rgba(244, 181, 72, 0.12); border: 1px solid rgba(244, 181, 72, 0.3); border-left: 4px solid var(--moes-gold); border-radius: 0 18px 18px 0; padding: 1.1rem 1.2rem; }
+        .callout h3 { color: var(--moes-ink); font-size: 1rem; font-weight: 600; margin-bottom: 0.55rem; }
+        @media screen and (max-width: 768px) {
+            .nav-shell { grid-template-columns: 1fr; justify-items: center; }
+            .nav-brand { justify-self: center; }
+            .project-header-shell::before { margin-bottom: 1rem; }
+        }
+        @media screen and (min-width: 768px) {
+            .media-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .media-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+    <nav class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 nav-shell">
+            <a href="index.html" class="nav-brand" aria-label="Matt Golino home">
+                <img src="images/VR_icon_2026.png" alt="Matt Golino VR logo">
+                <span class="nav-brand-text">Matt Golino</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="banner-hero relative h-[54vh] min-h-[420px] overflow-hidden mt-16">
+        <img src="images/Moes/PD_Panorama.jpg" alt="Moe's participatory design workshop panorama" class="absolute inset-0 w-full h-full object-cover object-center">
+    </section>
+
+    <section class="project-header pt-10 pb-8 px-6 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="project-header-shell max-w-4xl">
+                <p class="project-label text-sm font-semibold uppercase mb-4">Industry Partner Research Project</p>
+                <h1 class="project-title text-6xl md:text-8xl mb-6 tracking-tight font-light">Moe's Voice Interaction</h1>
+                <p class="project-subtitle text-2xl md:text-3xl mb-8 font-light">A semester-long HCI research project examining whether voice ordering made sense for Moe's and what that experience could become</p>
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">UX Research</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Voice Interaction</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Participatory Design</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Conversational Agent UX</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Industry Collaboration</span>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 mb-8">
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Context</p><p class="project-meta text-lg">HCI Research Methods Course</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Partner</p><p class="project-meta text-lg">Moe's Southwest Grill</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Duration</p><p class="project-meta text-lg">Semester-long</p></div>
+                </div>
+                <div class="at-a-glance">
+                    <h3>At a glance</h3>
+                    <ul>
+                        <li>Worked with Moe's as an industry partner to evaluate whether voice ordering made strategic and experiential sense</li>
+                        <li>Ran a broad research program including surveys, interviews, observation, participatory design, and heuristic analysis</li>
+                        <li>Helped translate findings into deliverables including design guidelines, demo materials, and a functioning voice prototype</li>
+                        <li>Took particular ownership of facilitation, communication, synthesis, and stakeholder-facing work</li>
+                        <li>Built the final AI-driven voice interaction prototype in Dialogflow</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+            <aside class="hidden lg:block lg:col-span-3">
+                <div class="sticky top-24">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wider">Contents</h3>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="toc-link block py-2 px-3 text-sm text-slate-600">Overview</a>
+                        <a href="#research" class="toc-link block py-2 px-3 text-sm text-slate-600">Research and Framing</a>
+                        <a href="#participatory-design" class="toc-link block py-2 px-3 text-sm text-slate-600">Participatory Design and Synthesis</a>
+                        <a href="#prototype" class="toc-link block py-2 px-3 text-sm text-slate-600">Prototype, Evaluation, and Outcome</a>
+                        <a href="#gallery" class="toc-link block py-2 px-3 text-sm text-slate-600">Gallery</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <article class="lg:col-span-9">
+                <section id="overview" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Overview</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">Moe's Southwest Grill partnered with our HCI team to answer a strategic question: should Moe's implement voice ordering, and if so, what should that experience look like? Rather than assuming voice interaction was inherently valuable, we approached the project as a research problem first - investigating customer behavior, restaurant context, employee realities, and the conditions under which voice ordering might or might not make sense.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">The project took place over a semester in an HCI research methods course, but the work was grounded in a real industry collaboration. Our team used a broad mix of methods, including surveys, interviews, field observation, participatory design, competitive analysis, and expert evaluation, to move from an open-ended business question toward more concrete design guidance and prototype direction.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">By the end of the semester, we delivered a set of findings and recommendations to the Moe's team, along with supporting artifacts including a demo scenario, design guidelines, and a functioning voice interaction prototype.</p>
+                    <div class="callout">
+                        <h3>My Contribution</h3>
+                        <p class="text-lg text-slate-700 leading-relaxed">I contributed across the project, but my strongest ownership was in facilitation-heavy and synthesis-heavy work: guiding discussions, planning agendas, scripting and facilitating the participatory design workshop, managing communication with our professor, TA, and industry partner, and delivering the final presentation. I also <b>independently built the final AI-driven voice prototype in Dialogflow</b>, which became one of the project’s most tangible deliverables.</p>
+                    </div>
+                </section>
+
+                <section id="research" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Research and Framing</h2>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">Because the prompt was so open-ended, we started by mapping everything we needed to understand: customer behavior in-store, operational realities behind the counter, how voice systems succeed or fail in service contexts, and what kinds of ordering moments might benefit from voice interaction. This early framing work helped us separate the project into more manageable research paths rather than jumping prematurely to a solution.</p>
+                        <div class="media-grid media-grid--2 media-grid--standard">
+                            <img src="images/Moes/FirstStickySesh2.jpg" alt="Moe's sticky note brainstorm session one" class="case-study-image w-full">
+                            <img src="images/Moes/FirstStickySesh3.jpg" alt="Moe's sticky note brainstorm session two" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Early framing work helped us turn a vague partner question into a more structured set of research questions</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">From there, we combined desk research with firsthand observation. We gathered scholarly and industry references, organized them into a shared team repository, and visited a Moe's location to observe customer behavior, staff interactions, and potential points where voice interaction might fit - or create friction. This gave us both higher-level context and grounded service insight.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Moes/ResearchConglomeration.png" alt="Repository of Moe's research resources" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Moes/ObservationStickies.jpg" alt="Sticky notes from Moe's observation session" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Desk research and field observation gave us both a structured knowledge base and a grounded view of how service interactions actually played out in-store.</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">We then moved into customer-facing research. A short survey gave us initial quantitative data and helped screen for follow-up interviews, while interviews deepened our understanding of user perceptions, concerns, and expectations around ordering. We translated that material into personas, empathy maps, and scenario-based artifacts that made the emerging user landscape easier to communicate both within the team and back to the partner.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">We also used competitive analysis to understand how adjacent voice systems were already being framed in practice. Looking at examples like the Starbucks voice assistant helped us identify both the promise and the limits of current voice ordering experiences.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide mb-6">
+                            <img src="images/Moes/SampleSurveyQuestions.png" alt="Sample survey questions for Moe's research" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Moes/CompositeCharts.png" alt="Composite charts from Moe's survey data" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">Initial survey work gave us both directional quantitative signals and a way to recruit stronger interview participants</p>
+                        <div class="media-grid media-grid--3 media-grid--standard mb-6">
+                            <img src="images/Moes/MoesStoryboard.jpg" alt="Moe's storyboard" class="case-study-image w-full">
+                            <img src="images/Moes/Persona1.jpg" alt="Moe's persona one" class="case-study-image w-full">
+                            <img src="images/Moes/Persona2.jpg" alt="Moe's persona two" class="case-study-image w-full">
+                            <img src="images/Moes/EmpathyMap2.jpg" alt="Moe's empathy map one" class="case-study-image w-full">
+                            <img src="images/Moes/EmpathyMap3.jpg" alt="Moe's empathy map two" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">These artifacts helped us synthesize and communicate what we were learning about different user needs and expectations</p>
+                        <div class="media-grid media-grid--wide">
+                            <img src="images/Moes/StarbucksStoryboard.jpg" alt="Starbucks voice assistant storyboard" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Competitive analysis helped us study how similar voice experiences were already being structured in the wild</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">At a key midpoint, we presented our findings and proposed directions to the Moe's team at their corporate office. That conversation surfaced an important shift: Moe's was about to undergo a major rebrand. Because the menu, store environment, and overall experience were changing, we revisited the field context by observing a test location and grounding the next phase of the project in the updated brand reality.</p>
+                        <div class="media-grid media-grid--3 media-grid--standard">
+                            <img src="images/Moes/NewMoes1.jpg" alt="New Moe's restaurant one" class="case-study-image w-full">
+                            <img src="images/Moes/NewMoes2.jpg" alt="New Moe's restaurant two" class="case-study-image w-full">
+                            <img src="images/Moes/NewMoes6.jpg" alt="New Moe's restaurant three" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">The rebrand changed the service environment enough that we needed to re-ground the project in the updated in-store experience</p>
+                    </div>
+                </section>
+
+                <section id="participatory-design" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Participatory Design and Synthesis</h2>
+
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">At this stage, the project shifted from understanding the current experience to actively exploring what a future voice interaction might need to support. Participatory design became especially valuable because it let us move beyond abstract assumptions and surface more concrete expectations, behaviors, and design ideas with real participants.</p>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">To prepare for this phase, we returned to the rebranded Moe's for additional observation and interviewed an employee to better understand how the new environment changed service flow. Those insights fed directly into a participatory design workshop that I largely scripted and led as facilitator. My role was to shape the flow of the workshop, guide transitions, and help participants elaborate on their thinking in ways that would be useful for later synthesis.</p>
+                        <div class="media-grid media-grid--2 media-grid--standard">
+                            <img src="images/Moes/NewMoes5.jpg" alt="Observation session at new Moe's one" class="case-study-image w-full">
+                            <img src="images/Moes/NewMoes4.jpg" alt="Observation session at new Moe's two" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Additional fieldwork in the rebranded store helped us prepare the workshop around the updated service experience</p>
+                        <div class="media-grid media-grid--wide">
+                            <img src="images/Moes/MeFacilitating.jpg" alt="Facilitating the Moe's workshop" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">I led the workshop flow, helping participants move through activities and articulate their expectations in detail</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">The workshop activities relied on roleplay, with participants rotating between acting as customers and acting as the voice ordering system. This format helped surface conversational expectations, breakdowns, and moments of friction more effectively than a simple discussion would have. Before running the live session, we tested and refined the activities with fellow HCI students.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Moes/ActivityDesign.jpg" alt="Whiteboard from participatory workshop design" class="case-study-image w-full">
+                            <img src="images/Moes/TestingActivities.jpg" alt="Testing participatory workshop activities" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">We designed and trial-ran workshop activities before the live session to make sure they produced useful, concrete feedback</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">The workshop generated rich feedback on both the new Moe's brand experience and the expectations people brought to voice interaction in a restaurant context. Afterward, we reviewed the recordings and organized the findings into a large affinity map that became the basis for the project’s final direction. This synthesis phase helped us move from broad research evidence to clearer design implications and deliverables.</p>
+                        <div class="media-grid media-grid--3 media-grid--standard mb-6">
+                            <img src="images/Moes/PD1.jpg" alt="Participatory design workshop image one" class="case-study-image w-full">
+                            <img src="images/Moes/PD2.jpg" alt="Participatory design workshop image two" class="case-study-image w-full">
+                            <img src="images/Moes/PD3.jpg" alt="Participatory design workshop image three" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">The live workshop created a space for participants to act through the experience rather than only describe it</p>
+                        <div class="media-grid media-grid--3 media-grid--standard">
+                            <img src="images/Moes/AffMap1.jpg" alt="Affinity map one" class="case-study-image w-full">
+                            <img src="images/Moes/AffMap2.jpg" alt="Affinity map two" class="case-study-image w-full">
+                            <img src="images/Moes/AffMap4.jpg" alt="Affinity map three" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Post-workshop synthesis turned a large volume of qualitative input into clearer themes, design implications, and next-step decisions</p>
+                    </div>
+                </section>
+
+                <section id="prototype" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Prototype, Evaluation, and Outcome</h2>
+
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">The final phase of the project focused on translating the research into deliverables Moe's could actually react to and potentially build from. That meant moving from abstract findings toward concrete guidance, prototype scenarios, and a working proof of concept.</p>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">We first distilled the research into a set of design guidelines summarizing the most important implications for future voice experience work. Because those guidelines are restricted by NDA, they cannot be shown here in full. To make the recommendations more tangible, we also created a scenario-driven demo of an idealized voice ordering interaction using BotSociety.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Moes/BotSociety1.png" alt="BotSociety mockup one" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Moes/BotSociety2.png" alt="BotSociety mockup two" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">BotSociety helped us turn research-driven guidance into a more concrete example of what the interaction could feel like</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">A key step was translating the Moe's menu and ordering flow into a voice-friendly information architecture. We mapped the structure of the menu, clarified how ordering should progress conversationally, and used that structure as a foundation for both the demo scenario and the final prototype.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Moes/InfArch1.jpg" alt="Brainstorming the Moe's information architecture" class="case-study-image w-full">
+                            <img src="images/Moes/IAChart.png" alt="Final Moe's information architecture chart" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">We translated Moe's menu and ordering flow into a voice-friendly information architecture that could support the prototype</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">I then independently built the final AI voice prototype in Dialogflow. This required learning the platform, programming the conversational flow, and translating the information architecture into a functioning interaction model. The result was not a polished production system, but it was a meaningful proof of concept and one of the project’s strongest final deliverables.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Moes/DialogFlow1.png" alt="Dialogflow implementation screenshot one" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Moes/DialogFlow2.png" alt="Dialogflow implementation screenshot two" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">The Dialogflow prototype turned our research and information architecture into a working conversational proof of concept</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">Once the prototype was working, we designed evaluation criteria and brought in expert reviewers with deep experience in voice and audio interaction, along with lighter user feedback sessions for non-expert perspectives. We then packaged the research findings, design guidance, prototype, and evaluation results into a final presentation for the Moe's team. The project ended not with a single “answer,” but with a grounded recommendation set and a more concrete foundation for future exploration.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide mb-6">
+                            <img src="images/Moes/HeuristicChart.png" alt="Completed heuristic evaluation chart" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Moes/Bruce.jpg" alt="Dr. Bruce Walker" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Expert evaluation helped us pressure-test the prototype and the broader voice interaction direction</p>
+                        <div class="media-grid media-grid--wide">
+                            <img src="images/Moes/FinalPres.png" alt="Final Moe's presentation screen" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">The final handoff brought together research findings, design guidance, prototype work, and partner-facing recommendations</p>
+                    </div>
+
+                    <div class="story-block">
+                        <h3 class="text-2xl font-medium text-slate-900 mb-4">Outcome</h3>
+                        <p class="text-lg text-slate-700 leading-relaxed">This project was less about proving that voice ordering definitely should exist and more about understanding the conditions under which it might succeed. For me, it was an important exercise in running broad research, facilitating participatory work, and turning a messy service question into a working prototype and concrete deliverables for the partner.</p>
+                    </div>
+                </section>
+
+                <section id="gallery" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Gallery</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">These images are less about the formal argument of the case study and more about the human texture of the project - the team sessions, workshop moments, notes, and synthesis work that made a long semester collaboration feel real.</p>
+                    <div class="story-block">
+                        <img src="images/Moes/FirstStickySesh1.jpg" alt="Early Moe's team meeting" class="case-study-image w-full">
+                        <p class="caption">One of our earliest team working sessions as we began framing the project</p>
+                    </div>
+                    <div class="story-block">
+                        <img src="images/Moes/NewMoes3.jpg" alt="Team trying new Moe's menu items" class="case-study-image w-full">
+                        <p class="caption">Experiencing the product and service firsthand helped ground our later research and design conversations</p>
+                    </div>
+                    <div class="story-block">
+                        <img src="images/Moes/PDCardActivity1.jpg" alt="Workshop activity in progress" class="case-study-image w-full">
+                        <p class="caption">Participants and team members working through one of the participatory design activities</p>
+                    </div>
+                    <div class="story-block">
+                        <img src="images/Moes/AffMap3.jpg" alt="Affinity mapping session" class="case-study-image w-full">
+                        <p class="caption">Synthesis was a major part of the project, turning a large volume of research input into decisions and deliverables</p>
+                    </div>
+                    <div class="text-center pt-8 border-t border-slate-200 mt-10">
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <a href="#overview" class="project-button-secondary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to top</a>
+                            <a href="index.html" class="project-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to portfolio</a>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </div>
+
+    <footer class="py-8 px-6 border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500 text-sm">Copyright 2026 Matt Golino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll(".content-section");
+        const tocLinks = document.querySelectorAll(".toc-link");
+        function updateActiveTOC() {
+            let current = "";
+            sections.forEach((section) => {
+                if (window.pageYOffset >= section.offsetTop - 150) current = section.getAttribute("id");
+            });
+            tocLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === "#" + current) link.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", updateActiveTOC);
+        updateActiveTOC();
+    </script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenVR Startup | Matt Golino</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        :root {
+            --zenvr-kombu: #344942;
+            --zenvr-incense: #373D4D;
+            --zenvr-sand: #F1EDE4;
+            --zenvr-border: rgba(52, 73, 66, 0.16);
+            --zenvr-soft-border: rgba(55, 61, 77, 0.12);
+            --zenvr-tag-bg: rgba(52, 73, 66, 0.08);
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--zenvr-incense); background: #fff; }
+        .nav-shell { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; }
+        .nav-brand { display: inline-flex; align-items: center; gap: 0.7rem; color: #0f172a; text-decoration: none; justify-self: start; min-width: 0; }
+        .nav-brand:hover { color: #334155; }
+        .nav-brand img { height: 38px; width: auto; display: block; flex-shrink: 0; }
+        .nav-brand-text { font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; white-space: nowrap; }
+        .toc-link { transition: all 0.2s ease; border-left: 2px solid transparent; }
+        .toc-link:hover { border-left-color: #cbd5e1; color: #0f172a; }
+        .toc-link.active { border-left-color: #0f172a; color: #0f172a; font-weight: 500; }
+        .case-study-image { border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+        .content-section { scroll-margin-top: 100px; }
+        .media-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .media-grid .case-study-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .case-study-image--contain {
+            object-fit: contain !important;
+            background: rgba(241, 237, 228, 0.72);
+            padding: 0.35rem;
+        }
+        .case-study-image--top {
+            object-position: center 38%;
+        }
+        .media-grid--wide .case-study-image {
+            aspect-ratio: 16 / 10;
+        }
+        .media-grid--overview .case-study-image {
+            aspect-ratio: 4 / 3;
+        }
+        .media-grid--standard .case-study-image {
+            aspect-ratio: 4 / 3;
+        }
+        .media-grid--square-ish .case-study-image {
+            aspect-ratio: 1.15 / 1;
+        }
+        .media-grid--leadership .case-study-image {
+            aspect-ratio: 4 / 3;
+        }
+        .banner-hero {
+            box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.45);
+        }
+        .project-header {
+            background: linear-gradient(to bottom, rgba(241, 237, 228, 0.92), #fff 82%);
+            border-top: 1px solid var(--zenvr-border);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 10px 24px rgba(55, 61, 77, 0.05);
+        }
+        .project-header-shell {
+            position: relative;
+        }
+        .project-header-shell::before {
+            content: "";
+            display: block;
+            width: 96px;
+            height: 2px;
+            background: rgba(52, 73, 66, 0.3);
+            margin-bottom: 1.25rem;
+            border-radius: 999px;
+        }
+        .project-label {
+            color: var(--zenvr-kombu);
+            letter-spacing: 0.24em;
+        }
+        .project-title {
+            color: var(--zenvr-kombu);
+        }
+        .project-subtitle,
+        .project-meta,
+        .project-meta-label {
+            color: var(--zenvr-incense);
+        }
+        .zenvr-tag {
+            background: var(--zenvr-tag-bg);
+            color: var(--zenvr-kombu);
+            border: 1px solid rgba(52, 73, 66, 0.1);
+        }
+        .zenvr-button-primary {
+            background: var(--zenvr-kombu);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(52, 73, 66, 0.14);
+        }
+        .zenvr-button-primary:hover {
+            background: #2c3f39;
+        }
+        .zenvr-button-secondary {
+            background: rgba(52, 73, 66, 0.08);
+            color: var(--zenvr-kombu);
+            border: 1px solid rgba(52, 73, 66, 0.12);
+        }
+        .zenvr-button-secondary:hover {
+            background: rgba(52, 73, 66, 0.13);
+        }
+        .at-a-glance {
+            background: rgba(52, 73, 66, 0.05);
+            border: 1px solid rgba(52, 73, 66, 0.12);
+            border-radius: 18px;
+            padding: 1.1rem 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .at-a-glance h3 {
+            color: var(--zenvr-kombu);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.01em;
+        }
+        .at-a-glance ul {
+            list-style: disc;
+            margin: 0;
+            padding-left: 1.15rem;
+            color: var(--zenvr-incense);
+        }
+        .at-a-glance li + li {
+            margin-top: 0.45rem;
+        }
+        @media screen and (max-width: 768px) {
+            .nav-shell { grid-template-columns: 1fr; justify-items: center; }
+            .nav-brand { justify-self: center; }
+            .project-header-shell::before {
+                margin-bottom: 1rem;
+            }
+        }
+        @media screen and (min-width: 768px) {
+            .media-grid--2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .media-grid--3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            .media-grid--leadership {
+                grid-template-columns: repeat(6, minmax(0, 1fr));
+            }
+            .media-grid--leadership > .case-study-image {
+                grid-column: span 3;
+            }
+            .media-grid--leadership > .case-study-image:last-child:nth-child(odd) {
+                grid-column: 2 / span 4;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+    <nav class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 nav-shell">
+            <a href="index.html" class="nav-brand" aria-label="Matt Golino home">
+                <img src="images/VR_icon_2026.png" alt="Matt Golino VR logo">
+                <span class="nav-brand-text">Matt Golino</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="banner-hero relative h-[54vh] min-h-[420px] overflow-hidden mt-16">
+        <img src="images/ZenVR/ZenVR_SideQuest_banner.png" alt="ZenVR startup cover image" class="absolute inset-0 w-full h-full object-cover">
+    </section>
+
+    <section class="project-header pt-10 pb-8 px-6 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="project-header-shell max-w-4xl">
+                <p class="project-label text-sm font-semibold uppercase mb-4">ZenVR Case Study Part 2</p>
+                <h1 class="project-title text-6xl md:text-8xl mb-6 tracking-tight font-light">ZenVR Startup</h1>
+                <p class="project-subtitle text-2xl md:text-3xl mb-8 font-light">A case study in immersive design, product strategy, and leading ZenVR from research prototype to launched VR product</p>
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">Immersive Design</span>
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">Product Leadership</span>
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">UX Strategy</span>
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">Startup Execution</span>
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">Clinical Collaboration</span>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 mb-8">
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Timeline</p><p class="project-meta text-lg">2020 - Present</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Role</p><p class="project-meta text-lg">Founder, Product Lead, Research Collaborator</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Platforms</p><p class="project-meta text-lg">Meta Quest, Steam VR, Pico</p></div>
+                </div>
+                <div class="at-a-glance">
+                    <h3>At a glance</h3>
+                    <ul>
+                        <li>Founded and led ZenVR from thesis project to launched VR product</li>
+                        <li>Directed product vision across UX, content, contributor workflows, and platform launch</li>
+                        <li>Guided student, intern, and collaborator work through critique, iteration, and prioritization</li>
+                        <li>Contributed directly to selected design efforts including navigation redesign and progression systems</li>
+                        <li>Extended the product into clinical and research collaborations</li>
+                    </ul>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://www.meta.com/experiences/4405820249480267/" target="_blank" rel="noreferrer" class="zenvr-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">View on Meta Quest Store</a>
+                    <a href="zenvr-thesis.html" class="zenvr-button-secondary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">See Part 1 - Thesis research and design</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+            <aside class="hidden lg:block lg:col-span-3">
+                <div class="sticky top-24">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wider">Contents</h3>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="toc-link block py-2 px-3 text-sm text-slate-600">Overview</a>
+                        <a href="#startup-story" class="toc-link block py-2 px-3 text-sm text-slate-600">From Thesis to Product</a>
+                        <a href="#ui-redesign" class="toc-link block py-2 px-3 text-sm text-slate-600">UI Redesign</a>
+                        <a href="#rowing" class="toc-link block py-2 px-3 text-sm text-slate-600">Boat Rowing</a>
+                        <a href="#lantern-calligraphy" class="toc-link block py-2 px-3 text-sm text-slate-600">Lantern Calligraphy</a>
+                        <a href="#mr-walking" class="toc-link block py-2 px-3 text-sm text-slate-600">MR Walking</a>
+                        <a href="#progression" class="toc-link block py-2 px-3 text-sm text-slate-600">Progression System</a>
+                        <a href="#clinical-collaboration" class="toc-link block py-2 px-3 text-sm text-slate-600">Clinical Collaboration</a>
+                        <a href="#leadership" class="toc-link block py-2 px-3 text-sm text-slate-600">Leadership, Strategy, and Execution</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <article class="lg:col-span-9">
+                <section id="overview" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Overview</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">ZenVR began as my Georgia Tech master's thesis and grew into a real consumer VR application, startup, and long-running product effort. Over the past six years, I have been a primary driver of that evolution - setting product direction, shaping key experience concepts, guiding developer, student, and intern contributors, refining work through ongoing critique and iteration, and handling the strategic, operational, and communication work required to keep the product moving.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">This page is intentionally a selective view of that work. Rather than documenting every project connected to ZenVR, it highlights a few representative examples of how I contributed through product leadership, immersive experience strategy, design critique and refinement, team guidance, and clinical translation.</p>
+                    <div class="media-grid media-grid--2 media-grid--overview">
+                        <img src="images/ZenVR/UIRedesignFinal.png" alt="ZenVR final UI redesign in the live product" class="case-study-image w-full">
+                        <img src="images/ZenVR/IVRHA.jpg" alt="Matt Golino presenting ZenVR publicly" class="case-study-image case-study-image--top w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center mt-4">A snapshot of ZenVR as both product and public-facing venture, pairing a live in-app experience with conference presentation work.</p>
+                </section>
+
+                <hr class="border-slate-200 my-16">
+
+                <section id="startup-story" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">From Thesis to Product</h2>
+                    <div class="aspect-video mb-8 rounded-2xl overflow-hidden shadow-lg">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/M_LTh8Pmd7c?si=i99zM7vwL5nhWlfS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">At the end of the thesis project, I had a choice: let ZenVR remain an academic success, or continue building it into something people could actually use. I chose the latter, launching the company through Georgia Tech's Create-X accelerator in 2020 and continuing to develop ZenVR as both a product and a business.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">Over time, ZenVR became a launched consumer application across Meta, Steam, and Pico - a process that involved not only design and development, but platform submission work, release coordination, business communication, and adapting to the expectations of different ecosystems. The app generated recurring sales revenue, reached hundreds of users, earned an ESRB rating, and has remained the highest-rated VR meditation app on the Meta Quest store since launch. The sections below highlight a small selection of the work that made that growth possible.</p>
+                </section>
+
+                <section id="ui-redesign" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">User Interface Redesign</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">One of the most direct design contributions I made at ZenVR was a redesign of the main menu and navigation system. I led the effort to rethink the structure, hierarchy, and visual direction of the experience so it would feel more intuitive, motivating, and supportive of progression through the curriculum.</p>
+                    <h4 class="text-xl font-medium text-slate-900 mb-4">Before: Original UI</h4>
+                    <div class="media-grid media-grid--3 media-grid--standard mb-4">
+                        <img src="images/ZenVR/UIOld.png" alt="Old ZenVR main menu UI" class="case-study-image w-full">
+                        <img src="images/ZenVR/UILearnOld.png" alt="Old ZenVR learn menu" class="case-study-image w-full">
+                        <img src="images/ZenVR/UIPracticeOld.png" alt="Old ZenVR practice menu" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center mb-8">The original UI supported basic navigation, but offered little clarity, motivation, or sense of progression.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">The earlier interface was functional, but it still carried the feel of a prototype-era system. It was text-heavy, visually flat, and did not do much to help users understand what was available, where to start, or how they were progressing through the experience.</p>
+                    <h4 class="text-xl font-medium text-slate-900 mb-4">Iterative Design Process</h4>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">I drove the redesign through collaborative ideation and iteration with our developer, marketing lead, and student contributors. My role included defining the overall interaction model, guiding visual and navigational direction, refining the work through critique and iteration, and creating high-fidelity mockups that helped carry the final direction into implementation. The challenge was not only to make the UI more polished, but to make it feel motivating - something that invited users back into the product rather than simply getting them through a menu.</p>
+                    <div class="media-grid media-grid--2 media-grid--wide mb-8">
+                        <img src="images/ZenVR/UIRedesignIterations.png" alt="ZenVR UI redesign iteration board" class="case-study-image w-full">
+                        <img src="images/ZenVR/UIRedesignIterations2.png" alt="Additional ZenVR UI redesign iterations" class="case-study-image case-study-image--contain w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center mb-8">These iteration boards capture the collaborative design process behind the redesign, from broad exploration to sharper navigational direction.</p>
+                    <h4 class="text-xl font-medium text-slate-900 mb-4">Final Direction And Live Implementation</h4>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">The final direction centered on clearer hierarchy, stronger visual previews, and lower-friction entry into the content. I created high-fidelity mockups in Figma for implementation and shaped two variants of the system: one for direct consumers and one for therapists and clinicians.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">The consumer experience made progression more visible and rewarding, showing what a user had completed, what was next, and how the broader curriculum fit together. One detail I especially loved was the addition of unlockable bonsai trees flanking the menu - a small but meaningful way to introduce delight and a sense of earned growth into the experience.</p>
+                    <div class="media-grid media-grid--2 media-grid--wide">
+                        <img src="images/ZenVR/UIRedesign1.png" alt="ZenVR new UI design concept one" class="case-study-image w-full">
+                        <img src="images/ZenVR/UIRedesign2.png" alt="ZenVR new UI design concept two" class="case-study-image w-full">
+                        <img src="images/ZenVR/UIRedesignFinal.png" alt="ZenVR live UI redesign implementation" class="case-study-image w-full">
+                        <img src="images/ZenVR/UIRedesignBonsais.png" alt="ZenVR bonsai progression reward system" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center">A progression from concept to live implementation, including the bonsai reward system that made curriculum progress feel more visible and rewarding.</p>
+                    <h4 class="text-xl font-medium text-slate-900 mt-10 mb-4">Implemented Onboarding Improvements</h4>
+                    <p class="text-lg text-slate-700 leading-relaxed">In addition to the broader menu redesign, I also helped guide onboarding improvements intended to make first-time use of ZenVR clearer and less intimidating. This work focused on early user understanding - helping people grasp what ZenVR was, how to move through it, and how to begin with more confidence. It was one of several examples where product design work extended beyond the headline features and into the smaller but essential moments that shape usability and retention.</p>
+                    <div class="media-grid media-grid--2 media-grid--wide mt-6">
+                        <img src="images/ZenVR/Onboarding1.PNG" alt="ZenVR onboarding improvement screen one" class="case-study-image w-full">
+                        <img src="images/ZenVR/onboarding2.webp" alt="ZenVR onboarding improvement screen two" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center">Onboarding improvements focused on helping first-time users understand what ZenVR is, how it works, and how to begin with more confidence.</p>
+                </section>
+
+                <section id="rowing" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Boat Rowing Meditation</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">Boat Rowing Meditation has been one of the longer-running experience threads within ZenVR. I guided the work across multiple phases and collaborators, including student teams, a design intern, and development interns, helping carry the concept from early exploration toward a more fully realized product experience.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">My role centered on shaping the concept, defining the interaction model, and guiding collaborators through critique and iteration. Across multiple phases of the work, I helped refine the experience so it stayed emotionally coherent, embodied, and aligned with ZenVR's broader product vision.</p>
+                    <div class="media-grid media-grid--2 media-grid--wide mb-4">
+                        <img src="images/ZenVR/BoatRowingMoodBoard.png" alt="Boat rowing meditation mood board" class="case-study-image w-full">
+                        <img src="images/ZenVR/BoatRowing Concept.png" alt="Boat rowing meditation concept art" class="case-study-image w-full">
+                        <img src="images/ZenVR/BoatRowingMenu.PNG" alt="Boat rowing meditation menu interface" class="case-study-image w-full">
+                        <img src="images/ZenVR/boatrowingaction.webp" alt="Boat rowing meditation in action" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center">Highlights from the mood boards, user journey work, and detailed experience planning for the rowing meditation experience.</p>
+                </section>
+
+                <section id="lantern-calligraphy" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Lantern Calligraphy</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">Lantern Calligraphy is a newer ZenVR feature that reflects the kind of product work I most enjoy leading: creating moments that are instructional, emotionally resonant, and meaningfully tied to the broader experience. In this concept, users complete a lesson, choose a relevant Chinese idiom, trace it onto a lantern through guided calligraphy, and release it into the sky.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">I shaped this feature as more than a decorative flourish. The goal was to create a closing ritual that reinforced learning, deepened reflection, and gave the session a stronger emotional arc. It is representative of the kind of work I most enjoy leading - product concepts where interaction, meaning, and emotional pacing all need to support one another.</p>
+                    <div class="media-grid media-grid--2 media-grid--wide mb-4">
+                        <img src="images/ZenVR/LanternCalligraphyStoryboard.png" alt="Lantern Calligraphy storyboard" class="case-study-image w-full">
+                        <img src="images/ZenVR/Lantern_Calligraphy_UIDesign.png" alt="Lantern Calligraphy UI design" class="case-study-image w-full">
+                        <img src="images/ZenVR/Lantern_Calligraphy1.png" alt="Lantern Calligraphy concept image one" class="case-study-image w-full">
+                        <img src="images/ZenVR/Lantern_Calligraphy2.png" alt="Lantern Calligraphy concept image two" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center">These images show a representative slice of the design process, from early storyboarding and concept framing through interface design and into a more functional feature direction within the app.</p>
+                </section>
+
+                <section id="mr-walking" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Mixed Reality Walking Meditation</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">As mixed reality began to open up new possibilities on devices like Quest 3, I started exploring how ZenVR could extend beyond fully virtual environments without losing its core identity. The question was not just "what can we build in MR," but "what kinds of experiences still feel true to the product's purpose and genuinely useful for users?"</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">This was early-stage concept work rather than a fully implemented feature. My role was to help define the product concept, shape the narrative and interaction framing, and guide a student designer through visual explorations that could make an emerging MR concept legible enough to discuss, critique, refine, and ultimately pitch for a targeted funding opportunity.</p>
+                    <div class="media-grid media-grid--2 media-grid--wide mb-4">
+                        <img src="images/ZenVR/WalkingMeditationExperienceDesign.png" alt="Walking meditation experience design overview" class="case-study-image w-full">
+                        <img src="images/ZenVR/WalkingAIPrototypingBlur.png" alt="AI-assisted mixed reality walking meditation prototyping" class="case-study-image w-full">
+                        <img src="images/ZenVR/WalkingMeditationExperienceStructure.png" alt="Mixed reality walking meditation structure diagram" class="case-study-image w-full">
+                        <img src="images/ZenVR/WalkingMeditationExperienceStructure2.png" alt="Detailed mixed reality walking meditation structure diagram" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center">A look at the documents and image-based prototyping used to envision, communicate, and refine a still-emerging mixed reality experience. Some content is intentionally blurred to preserve unreleased details.</p>
+                </section>
+
+                <section id="progression" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">User Progression System</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">Beyond ZenVR's headline features, I also led a number of smaller and mid-sized product initiatives focused on usability and product coherence. One representative example was a broader progression system - work centered on how users understand where they are in the journey, what they have completed, and what to do next.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">Because VR interactions are expensive to build before a direction is validated, this work relied heavily on concept testing through mid-fidelity mockups. My role was to define core opportunities, shape the experience concept and direction early, and work with our student designers to use screenshots, Figma, and composited visuals to communicate ideas, gather feedback, and refine the concept before development investment.</p>
+                    <div class="media-grid media-grid--3 media-grid--square-ish mb-4">
+                        <img src="images/ZenVR/ConceptTestingExample.png" alt="User progression concept testing overview" class="case-study-image case-study-image--contain w-full">
+                        <img src="images/ZenVR/ConceptTestingDetail1.png" alt="User progression concept detail one" class="case-study-image w-full">
+                        <img src="images/ZenVR/ConceptTestingDetail2.png" alt="User progression concept detail two" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center">A recurring part of VR design is finding the right combination of screenshots, Figma, and Photoshop to communicate interactive 3D ideas before development begins.</p>
+                </section>
+
+                <section id="clinical-collaboration" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Clinical and Academic Collaboration</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">As ZenVR matured, part of my role became leading its translation beyond consumer meditation into more clinically relevant contexts. That work required a different kind of product leadership - not just designing features, but thinking through how a VR intervention could be introduced responsibly into real care environments, adapted for adolescent populations, and supported by clinical protocols rather than consumer assumptions.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">I served as PI on two NIH STTR submissions focused on extending ZenVR into inpatient adolescent mental health treatment. While those applications were not funded, they played an important role in sharpening the translational strategy behind the product and in defining what would be required to make ZenVR viable in a clinical setting. Just as importantly, the effort required sustained coordination across multiple teams and institutions - building working relationships, aligning research and product goals, managing timelines, deliverables, and budgets, and helping guide a complex grant process that involved collaborators from Satori Studios, Colorado School of Mines, and the Anschutz medical ecosystem.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">In parallel, ZenVR received a small collaboration grant through Colorado School of Mines and the University of Colorado Anschutz ecosystem to support preliminary clinician-centered research on how VR meditation training could be introduced into adolescent mental health care. Using ZenVR as a design probe, the team conducted a survey with 35 clinicians and follow-up interviews with 8 clinicians to understand what future clinical protocols would need to address. The work surfaced three major areas of concern: how to screen for VR appropriateness, where VR should fit within the care pathway, and how prescription and dosage should be defined for real-world use.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">I also helped write this work into a CHI 2026 poster paper, where I am second author. This work represents an important dimension of the ZenVR story because it shows how my role extended beyond feature design into translational product thinking - helping move the product toward more rigorous research, stakeholder alignment, and real-world implementation planning.</p>
+                    <div class="media-grid media-grid--2 media-grid--wide">
+                        <img src="images/ZenVR/ZenVR CHI-2026 Poster.png" alt="ZenVR CHI 2026 poster" class="case-study-image case-study-image--contain w-full">
+                        <img src="images/ZenVR/Chi2026.png" alt="ZenVR CHI 2026 collaboration visual" class="case-study-image case-study-image--contain w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center">These materials reflect the CHI 2026 collaboration work, showing how the project was translated from consumer product context into clinician-centered research framing and communication.</p>
+                </section>
+
+                <section id="leadership" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Leadership, Strategy, and Execution</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">Beyond feature and experience design, I played a central product leadership role in helping ZenVR move forward. That included shaping project plans and scoped proposals, building roadmaps and feature priorities, creating decks and narratives for pitching and communication, running sprint planning and retrospectives, and representing the work publicly through conferences, booths, podcasts, and presentations.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">This work mattered because ZenVR was never just a design exercise. It required sustained translation between vision and execution, research and product, and internal development and external understanding. A major part of my role was maintaining momentum, coherence, and decision-making across long timelines, changing priorities, and a mix of creative, technical, and research-driven work.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">A significant part of my role also operated at the intersection of product management, creative direction, and mentorship. Across student- and intern-led initiatives, I scoped projects, defined priorities, reviewed work, unblocked teams, and helped maintain continuity of vision. In practice, that meant creating the structure, priorities, and review cadence that allowed other contributors to do strong work while keeping the product cohesive.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">I also led earlier therapist-facing deployment efforts for ZenVR, which gave me hands-on experience with the operational side of real-world implementation. That work included onboarding clinicians, preparing and configuring headsets, creating support and instructional materials, and helping the product fit into actual care environments. While that distribution model did not become a durable long-term business channel, ZenVR was used for meaningful periods in therapist offices and for roughly a year in a hospital-based cancer treatment center. That experience gave me a much clearer understanding of what it takes to move a VR product into practice - not just through design, but through logistics, support, communication, and follow-through.</p>
+                    <div class="media-grid media-grid--leadership mb-4">
+                        <img src="images/ZenVR/ProductionDevelopmentSchedule.png" alt="ZenVR scoped project schedule" class="case-study-image w-full">
+                        <img src="images/ZenVR/ProjectFeaturePlanning.png" alt="ZenVR feature planning roadmap" class="case-study-image w-full">
+                        <img src="images/ZenVR/SprintRetrospectives.png" alt="ZenVR sprint retrospective artifacts" class="case-study-image w-full">
+                        <img src="images/ZenVR/AWE.jpg" alt="Matt Golino presenting ZenVR at AWE" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center mb-8">Examples of the planning, communication, and outward-facing storytelling work required to guide ZenVR as both a product and a company.</p>
+                    <div class="text-center pt-8 border-t border-slate-200">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">ZenVR has been one of the clearest through-lines of my work: a project where research, product design, storytelling, and leadership all had to come together over time. This page captures only part of that story, but it shows how I helped carry the work from promising concept into an evolving product.</p>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <a href="zenvr-thesis.html" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-100 text-slate-900 rounded-full hover:bg-slate-200 transition-colors">See Part 1 - Traditional UX research and design case study</a>
+                            <a href="index.html" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors">Back to portfolio</a>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </div>
+
+    <footer class="py-8 px-6 border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500 text-sm">Copyright 2026 Matt Golino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll(".content-section");
+        const tocLinks = document.querySelectorAll(".toc-link");
+        function updateActiveTOC() {
+            let current = "";
+            sections.forEach((section) => {
+                if (window.pageYOffset >= section.offsetTop - 150) current = section.getAttribute("id");
+            });
+            tocLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === "#" + current) link.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", updateActiveTOC);
+        updateActiveTOC();
+    </script>
+</body>
+</html>

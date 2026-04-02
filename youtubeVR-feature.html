@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube VR Internship | Matt Golino</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        :root {
+            --yt-red: #ff0033;
+            --yt-deep-red: #d90429;
+            --yt-ink: #202124;
+            --yt-muted: #5f6368;
+            --yt-paper: #fff8f8;
+            --yt-border: rgba(217, 4, 41, 0.14);
+            --yt-tag-bg: rgba(255, 0, 51, 0.08);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--yt-ink);
+            background: #fff;
+        }
+        .nav-shell { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; }
+        .nav-brand { display: inline-flex; align-items: center; gap: 0.7rem; color: #0f172a; text-decoration: none; justify-self: start; min-width: 0; }
+        .nav-brand:hover { color: #334155; }
+        .nav-brand img { height: 38px; width: auto; display: block; flex-shrink: 0; }
+        .nav-brand-text { font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; white-space: nowrap; }
+        .toc-link { transition: all 0.2s ease; border-left: 2px solid transparent; }
+        .toc-link:hover { border-left-color: #cbd5e1; color: #0f172a; }
+        .toc-link.active { border-left-color: var(--yt-red); color: #0f172a; font-weight: 500; }
+        .content-section { scroll-margin-top: 100px; }
+        .case-study-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.1);
+        }
+        .case-study-image--contain {
+            object-fit: contain !important;
+            background: rgba(255, 248, 248, 0.95);
+            padding: 0.35rem;
+        }
+        .banner-hero {
+            position: relative;
+            box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.55);
+        }
+        .banner-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(to right, rgba(20, 20, 20, 0.16), rgba(20, 20, 20, 0.04)),
+                linear-gradient(to top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
+            pointer-events: none;
+        }
+        .project-header {
+            background: linear-gradient(to bottom, rgba(255, 248, 248, 0.96), #fff 82%);
+            border-top: 1px solid var(--yt-border);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 10px 24px rgba(32, 33, 36, 0.05);
+        }
+        .project-header-shell { position: relative; }
+        .project-header-shell::before {
+            content: "";
+            display: block;
+            width: 96px;
+            height: 2px;
+            background: rgba(217, 4, 41, 0.35);
+            margin-bottom: 1.25rem;
+            border-radius: 999px;
+        }
+        .project-label {
+            color: var(--yt-deep-red);
+            letter-spacing: 0.24em;
+        }
+        .project-title { color: var(--yt-ink); }
+        .project-subtitle,
+        .project-meta,
+        .project-meta-label {
+            color: var(--yt-muted);
+        }
+        .project-meta { color: var(--yt-ink); }
+        .project-tag {
+            background: var(--yt-tag-bg);
+            color: var(--yt-deep-red);
+            border: 1px solid rgba(217, 4, 41, 0.1);
+        }
+        .project-button-primary {
+            background: var(--yt-red);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(217, 4, 41, 0.16);
+        }
+        .project-button-primary:hover { background: #e1002d; }
+        .project-button-secondary {
+            background: rgba(255, 0, 51, 0.06);
+            color: var(--yt-deep-red);
+            border: 1px solid rgba(217, 4, 41, 0.12);
+        }
+        .project-button-secondary:hover { background: rgba(255, 0, 51, 0.11); }
+        .at-a-glance {
+            background: rgba(255, 0, 51, 0.045);
+            border: 1px solid rgba(217, 4, 41, 0.12);
+            border-radius: 18px;
+            padding: 1.1rem 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .at-a-glance h3 {
+            color: var(--yt-deep-red);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.01em;
+        }
+        .at-a-glance ul {
+            list-style: disc;
+            margin: 0;
+            padding-left: 1.15rem;
+            color: var(--yt-ink);
+        }
+        .at-a-glance li + li { margin-top: 0.45rem; }
+        .media-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .media-grid--standard .case-study-image { aspect-ratio: 4 / 3; }
+        .media-grid--wide .case-study-image { aspect-ratio: 16 / 10; }
+        .pull-quote {
+            background: var(--yt-paper);
+            border: 1px solid var(--yt-border);
+            border-left: 4px solid var(--yt-red);
+            border-radius: 0 18px 18px 0;
+            padding: 1.25rem 1.35rem;
+        }
+        .pull-quote p {
+            color: var(--yt-ink);
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        @media screen and (max-width: 768px) {
+            .nav-shell { grid-template-columns: 1fr; justify-items: center; }
+            .nav-brand { justify-self: center; }
+            .project-header-shell::before { margin-bottom: 1rem; }
+        }
+        @media screen and (min-width: 768px) {
+            .media-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .media-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+    <nav class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 nav-shell">
+            <a href="index.html" class="nav-brand" aria-label="Matt Golino home">
+                <img src="images/VR_icon_2026.png" alt="Matt Golino VR logo">
+                <span class="nav-brand-text">Matt Golino</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="banner-hero relative h-[54vh] min-h-[420px] overflow-hidden mt-16">
+        <img src="images/YouTubeVR/YouTubeVRCover.jpg" alt="YouTube VR cover image" class="absolute inset-0 w-full h-full object-cover object-center">
+    </section>
+
+    <section class="project-header pt-10 pb-8 px-6 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="project-header-shell max-w-4xl">
+                <p class="project-label text-sm font-semibold uppercase mb-4">Internship Case Study</p>
+                <h1 class="project-title text-6xl md:text-8xl mb-6 tracking-tight font-light">YouTube VR</h1>
+                <p class="project-subtitle text-2xl md:text-3xl mb-8 font-light">Designing the Movies and Shows experience for YouTube VR and exploring how premium media browsing could feel more coherent across platforms</p>
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Product Design</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">VR UX</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Internship</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Prototype Testing</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Cross-Team Collaboration</span>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 mb-8">
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Timeline</p><p class="project-meta text-lg">Summer 2019</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Role</p><p class="project-meta text-lg">UX Design Intern</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Focus</p><p class="project-meta text-lg">Movies and Shows in YouTube VR</p></div>
+                </div>
+                <div class="at-a-glance">
+                    <h3>At a glance</h3>
+                    <ul>
+                        <li>Collaborated with YouTube VR researchers, designers, prototypers, and developers on a major in-product feature</li>
+                        <li>Designed the Movies and Shows feature for the YouTube VR app</li>
+                        <li>Worked through prototyping, user testing, iteration, and final review with YouTube’s broader UX organization</li>
+                        <li>Saw the work approved, specced, handed off, and later reflected in the shipped product</li>
+                        <li>Raised and explored opportunities for greater continuity between the Movies and Shows experience across web, mobile, TV, and VR</li>
+                    </ul>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+            <aside class="hidden lg:block lg:col-span-3">
+                <div class="sticky top-24">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wider">Contents</h3>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="toc-link block py-2 px-3 text-sm text-slate-600">Overview</a>
+                        <a href="#movies-and-shows" class="toc-link block py-2 px-3 text-sm text-slate-600">Movies and Shows</a>
+                        <a href="#cross-platform" class="toc-link block py-2 px-3 text-sm text-slate-600">Cross-Platform Initiative</a>
+                        <a href="#live-product" class="toc-link block py-2 px-3 text-sm text-slate-600">Live Product</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <article class="lg:col-span-9">
+                <section id="overview" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Overview</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">In the summer of 2019, I interned with YouTube VR at YouTube’s headquarters in San Bruno, California. I worked closely with UX researchers, designers, prototypers, and developers while contributing to a major product effort inside the app.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">Because I cannot share the original internal design files, this page focuses on the problem, my role, and the product outcome. My main work centered on designing the Movies and Shows experience for YouTube VR, then helping carry it through prototyping, user testing, iteration, review, and handoff into production.</p>
+                    <div class="media-grid media-grid--wide">
+                        <img src="images/YouTubeVR/com.google.android.apps.youtube.vr.oculus-20231213-220316.jpg" alt="YouTube VR app screenshot" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center mt-4">A later in-product screenshot helps ground the internship story in the shipped YouTube VR environment.</p>
+                </section>
+
+                <hr class="border-slate-200 my-16">
+
+                <section id="movies-and-shows" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Movies and Shows</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">My primary internship project was designing the Movies and Shows experience for YouTube VR - a premium media browsing and playback surface that needed to feel legible, cinematic, and usable in an immersive environment. I worked through the full design loop with the team: defining UI and UX directions, collaborating with our UX prototyper on interactive mockups, partnering with research to test the designs with users, iterating on the work, and presenting the final direction to YouTube’s broader UX review board.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">The final designs were approved, specced, and handed off to development, and the core experience later appeared in the live product. That made the project especially meaningful as an intern: it was not just exploratory work, but a feature direction that survived review and entered production.</p>
+                    <div class="media-grid media-grid--2 media-grid--wide">
+                        <img src="images/YouTubeVR/Movies2.jpg" alt="YouTube VR Movies view" class="case-study-image w-full">
+                        <img src="images/YouTubeVR/Shows.jpg" alt="YouTube VR Shows view" class="case-study-image w-full">
+                    </div>
+                </section>
+
+                <section id="cross-platform" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Cross-Platform Initiative</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">Alongside the core VR work, I also explored a broader question: how should Movies and Shows feel coherent across web, mobile, TV, and VR? While this did not become a full internship deliverable, it was an important early lesson in product design beyond a single interface - treating platform-specific UX decisions as part of a larger ecosystem rather than as isolated screens.</p>
+                    <div class="media-grid media-grid--2 media-grid--standard">
+                        <img src="images/YouTubeVR/MoviesLeft.jpg" alt="YouTube VR Movies interface from left angle" class="case-study-image w-full">
+                        <img src="images/YouTubeVR/MoviesRight.jpg" alt="YouTube VR Movies interface from right angle" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center mt-4">These live product views hint at the broader challenge: media browsing in VR needed to feel legible and cinematic, while still fitting within a larger YouTube ecosystem.</p>
+                </section>
+
+                <section id="live-product" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Live Product Snapshot</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">Below are a few screenshots of what the Movies and Shows feature looked like live in the app as of December 2023. I cannot claim the production experience matches my internship designs in every detail, but the core implementation is there, which makes this a useful way to point to the project’s eventual real-world expression.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">The shipped implementation is important because it distinguishes the work from purely speculative internship concepting. Even if the final shipped implementation does not match my original designs in every detail, the feature’s presence in the live product reflects a real path from internship contribution to production.</p>
+                    <div class="media-grid media-grid--2 media-grid--wide">
+                        <img src="images/YouTubeVR/Movies1.jpg" alt="YouTube VR Movies page live in product" class="case-study-image w-full">
+                        <img src="images/YouTubeVR/com.google.android.apps.youtube.vr.oculus-20231213-220316.jpg" alt="YouTube VR live app screenshot from Oculus build" class="case-study-image w-full">
+                    </div>
+                </section>
+
+                <div class="text-center pt-8 border-t border-slate-200 mt-10">
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">This internship was an early glimpse of the kind of work I still care about most: ambitious product design in emerging platforms, carried through not only as concept work, but through collaboration, testing, and shipment.</p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="#overview" class="project-button-secondary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to top</a>
+                        <a href="index.html" class="project-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to portfolio</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <footer class="py-8 px-6 border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500 text-sm">Copyright 2026 Matt Golino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll(".content-section");
+        const tocLinks = document.querySelectorAll(".toc-link");
+        function updateActiveTOC() {
+            let current = "";
+            sections.forEach((section) => {
+                if (window.pageYOffset >= section.offsetTop - 150) current = section.getAttribute("id");
+            });
+            tocLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === "#" + current) link.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", updateActiveTOC);
+        updateActiveTOC();
+    </script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TwitchVR | Matt Golino</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        :root {
+            --twitch-deep: #21132f;
+            --twitch-purple: #9146ff;
+            --twitch-soft: #f7f1ff;
+            --twitch-ink: #27232e;
+            --twitch-muted: #5d5568;
+            --twitch-border: rgba(145, 70, 255, 0.16);
+            --twitch-tag-bg: rgba(145, 70, 255, 0.08);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--twitch-ink);
+            background: #fff;
+        }
+        .nav-shell { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; }
+        .nav-brand { display: inline-flex; align-items: center; gap: 0.7rem; color: #0f172a; text-decoration: none; justify-self: start; min-width: 0; }
+        .nav-brand:hover { color: #334155; }
+        .nav-brand img { height: 38px; width: auto; display: block; flex-shrink: 0; }
+        .nav-brand-text { font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; white-space: nowrap; }
+        .toc-link { transition: all 0.2s ease; border-left: 2px solid transparent; }
+        .toc-link:hover { border-left-color: #cbd5e1; color: #0f172a; }
+        .toc-link.active { border-left-color: var(--twitch-purple); color: #0f172a; font-weight: 500; }
+        .content-section { scroll-margin-top: 100px; }
+        .case-study-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.1);
+        }
+        .case-study-image--contain {
+            object-fit: contain !important;
+            background: rgba(247, 241, 255, 0.95);
+            padding: 0.35rem;
+        }
+        .banner-hero {
+            position: relative;
+            box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.55);
+        }
+        .banner-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(to right, rgba(33, 19, 47, 0.18), rgba(33, 19, 47, 0.04)),
+                linear-gradient(to top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
+            pointer-events: none;
+        }
+        .project-header {
+            background: linear-gradient(to bottom, rgba(247, 241, 255, 0.96), #fff 82%);
+            border-top: 1px solid var(--twitch-border);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 10px 24px rgba(33, 19, 47, 0.05);
+        }
+        .project-header-shell { position: relative; }
+        .project-header-shell::before {
+            content: "";
+            display: block;
+            width: 96px;
+            height: 2px;
+            background: rgba(145, 70, 255, 0.35);
+            margin-bottom: 1.25rem;
+            border-radius: 999px;
+        }
+        .project-label {
+            color: var(--twitch-purple);
+            letter-spacing: 0.24em;
+        }
+        .project-title { color: var(--twitch-deep); }
+        .project-subtitle,
+        .project-meta,
+        .project-meta-label {
+            color: var(--twitch-muted);
+        }
+        .project-meta { color: var(--twitch-ink); }
+        .project-tag {
+            background: var(--twitch-tag-bg);
+            color: var(--twitch-purple);
+            border: 1px solid rgba(145, 70, 255, 0.1);
+        }
+        .project-button-primary {
+            background: var(--twitch-purple);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(145, 70, 255, 0.18);
+        }
+        .project-button-primary:hover { background: #7f39ea; }
+        .project-button-secondary {
+            background: rgba(145, 70, 255, 0.06);
+            color: var(--twitch-purple);
+            border: 1px solid rgba(145, 70, 255, 0.12);
+        }
+        .project-button-secondary:hover { background: rgba(145, 70, 255, 0.11); }
+        .at-a-glance {
+            background: rgba(145, 70, 255, 0.045);
+            border: 1px solid rgba(145, 70, 255, 0.12);
+            border-radius: 18px;
+            padding: 1.1rem 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .at-a-glance h3 {
+            color: var(--twitch-purple);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.01em;
+        }
+        .at-a-glance ul {
+            list-style: disc;
+            margin: 0;
+            padding-left: 1.15rem;
+            color: var(--twitch-ink);
+        }
+        .at-a-glance li + li { margin-top: 0.45rem; }
+        .media-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .media-grid--standard .case-study-image { aspect-ratio: 4 / 3; }
+        .media-grid--wide .case-study-image { aspect-ratio: 16 / 10; }
+        .caption {
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .story-block + .story-block {
+            margin-top: 2.5rem;
+        }
+        .role-callout {
+            background: rgba(145, 70, 255, 0.05);
+            border: 1px solid rgba(145, 70, 255, 0.12);
+            border-left: 4px solid var(--twitch-purple);
+            border-radius: 0 18px 18px 0;
+            padding: 1.15rem 1.25rem;
+            margin-top: 2rem;
+        }
+        .role-callout h3 {
+            color: var(--twitch-purple);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.55rem;
+        }
+        @media screen and (max-width: 768px) {
+            .nav-shell { grid-template-columns: 1fr; justify-items: center; }
+            .nav-brand { justify-self: center; }
+            .project-header-shell::before { margin-bottom: 1rem; }
+        }
+        @media screen and (min-width: 768px) {
+            .media-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .media-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+    <nav class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 nav-shell">
+            <a href="index.html" class="nav-brand" aria-label="Matt Golino home">
+                <img src="images/VR_icon_2026.png" alt="Matt Golino VR logo">
+                <span class="nav-brand-text">Matt Golino</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="banner-hero relative h-[54vh] min-h-[420px] overflow-hidden mt-16">
+        <img src="images/TwitchVR/TwitchCover.png" alt="TwitchVR cover image" class="absolute inset-0 w-full h-full object-cover object-center">
+    </section>
+
+    <section class="project-header pt-10 pb-8 px-6 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="project-header-shell max-w-4xl">
+                <p class="project-label text-sm font-semibold uppercase mb-4">Studio Project</p>
+                <h1 class="project-title text-6xl md:text-8xl mb-6 tracking-tight font-light">TwitchVR</h1>
+                <p class="project-subtitle text-2xl md:text-3xl mb-8 font-light">A design studio project exploring what a VR-native Twitch experience could feel like for shared, immersive livestream viewing</p>
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">VR Design</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Unity Prototype</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Interaction Design</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">3D Modeling</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Spatial UX</span>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 mb-8">
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Context</p><p class="project-meta text-lg">Georgia Tech Design Studio</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Timeline</p><p class="project-meta text-lg">3 Week Design Sprint</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Outcome</p><p class="project-meta text-lg">Working Unity VR Demo</p></div>
+                </div>
+                <div class="at-a-glance">
+                    <h3>At a glance</h3>
+                    <ul>
+                        <li>Created as part of a Georgia Tech design studio exploring social media in virtual reality</li>
+                        <li>Concepted a VR-native Twitch experience centered on shared viewing, private immersion, and social interaction</li>
+                        <li>Built a functioning Unity VR demo rather than a video-only concept</li>
+                        <li>Led the technical implementation, including Blender modeling, Unity environment creation, and interaction scripting</li>
+                        <li>Helped script, voice, and edit the final demo presentation</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+            <aside class="hidden lg:block lg:col-span-3">
+                <div class="sticky top-24">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wider">Contents</h3>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="toc-link block py-2 px-3 text-sm text-slate-600">Overview</a>
+                        <a href="#concept" class="toc-link block py-2 px-3 text-sm text-slate-600">Concept and Interaction Model</a>
+                        <a href="#prototype" class="toc-link block py-2 px-3 text-sm text-slate-600">Prototype and Build</a>
+                        <a href="#selected-screens" class="toc-link block py-2 px-3 text-sm text-slate-600">Selected Screens</a>
+                        <a href="#outcome" class="toc-link block py-2 px-3 text-sm text-slate-600">Outcome</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <article class="lg:col-span-9">
+                <section id="overview" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Overview</h2>
+                    <div class="aspect-video mb-8 rounded-2xl overflow-hidden shadow-lg">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/G-uBxSVT8C4" title="TwitchVR demo video" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">TwitchVR was a design studio project exploring how livestream spectatorship might feel if it were designed natively for home VR rather than adapted from a flat interface. Instead of treating Twitch as just another screen in a headset, we imagined it as a shared spatial experience - part theater, part social viewing room, and part personal immersion.</p>
+
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">The project was completed in a three-week Georgia Tech design sprint focused on reimagining social media in virtual reality. While some teams pursued lighter “mobile VR” concepts, we chose to push toward a fully immersive direction and built a functioning Unity demo to make the idea tangible.</p>
+
+                    <div class="role-callout">
+                        <h3>My Role</h3>
+                        <p class="text-lg text-slate-700 leading-relaxed">I was the team member responsible for much of the prototype implementation. That included 3D modeling in Blender, environment creation and scripting in Unity, and helping shape the VR-specific interaction patterns across the experience. I also scripted, voiced, and edited much of the final demo video.</p>
+                    </div>
+                </section>
+
+                <section id="concept" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Concept and Interaction Model</h2>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">Twitch is built around live viewing and real-time social presence, which made it a compelling test case for VR. The design question was not simply how to place Twitch into a headset, but how to reinterpret livestream viewing as something more spatial, communal, and immersive.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">Our concept centered on a theater-like social environment for watching streams with others, combined with the ability to shift into a more private, focused mode when desired. One of the key interaction ideas was a transition from shared viewing to private viewing by summoning a VR headset within the experience itself - effectively using an in-world interaction to “zoom in” to a more immersive personal mode.</p>
+                        <div class="media-grid media-grid--2 media-grid--standard">
+                            <img src="images/TwitchVR/sketch2.jpg" alt="Initial TwitchVR sketch one" class="case-study-image w-full">
+                            <img src="images/TwitchVR/sketch1.jpg" alt="Initial TwitchVR sketch two" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Early sketches exploring how Twitch viewing, chat, and environmental immersion might come together in a VR-native experience</p>
+                    </div>
+
+                    <div class="story-block">
+                        <img src="images/TwitchVR/StoryBoard1.jpg" alt="Storyboard showcasing TwitchVR private viewing mode" class="case-study-image w-full">
+                        <p class="caption">Storyboard of the transition from shared theater viewing to private immersive mode, one of the project’s defining interaction concepts</p>
+                    </div>
+                </section>
+
+                <section id="prototype" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Prototype and Build</h2>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">Once the concept was defined, we moved quickly into prototyping across multiple levels of fidelity. We used physical modeling to think through scale, spatial layout, and how the environment might feel as a place rather than just an interface. That helped us clarify the structure of the viewing space before building it digitally.</p>
+                        <div class="media-grid media-grid--2 media-grid--standard">
+                            <img src="images/TwitchVR/PaperModel1.jpg" alt="TwitchVR paper prototype one" class="case-study-image w-full">
+                            <img src="images/TwitchVR/PaperModel2.jpg" alt="TwitchVR paper prototype two" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Physical prototyping helped us reason about scale, seating, visibility, and spatial composition before moving into Unity</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">From there, we created a functioning VR demo in Unity. I used Blender and Unity to build the environment and implement the core interactions, while my teammates developed interface assets and supporting design materials that I could integrate into the virtual space. This made the project more than a speculative concept - it became something users could actually step into with a headset.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/TwitchVR/CurvedUI1.png" alt="Curved Channel Changer UI screen" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/TwitchVR/CurvedUI2.png" alt="Flat version of the Channel Changer UI screen" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">Explorations of how channel browsing UI might adapt from flat screens into a curved, spatially appropriate VR surface</p>
+
+                        <div class="media-grid media-grid--wide mt-8">
+                            <img src="images/TwitchVR/ChatScreen.png" alt="Scrolling seatback chat screen UI" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">A seatback chat interface designed to keep livestream interaction present without overwhelming the main viewing experience</p>
+
+                        <div class="media-grid media-grid--2 media-grid--wide mt-8">
+                            <img src="images/TwitchVR/Emotes1.png" alt="Emote selection UI" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/TwitchVR/Emotes2.png" alt="Sample emote speech bubble" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">Emote and reaction concepts intended to make crowd presence and lightweight social expression visible inside the shared space</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">The prototype also explored how the experience could live in different virtual venues rather than a single fixed theater, reinforcing the idea that livestream viewing in VR could be environmental as well as interface-driven.</p>
+                        <img src="images/TwitchVR/VenueView.png" alt="TwitchVR concept in the Fox Theater" class="case-study-image w-full">
+                        <p class="caption">A concept rendering showing how the viewing experience could extend into customizable virtual venues rather than a single fixed theater</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">Late in the sprint, we ran into major issues transferring the Unity build to the machine connected to the HTC Vive. I ended up rebuilding key parts of the theater and interactions overnight so the team could still present a functioning VR demo. It was a stressful finish, but it also underscored how much of the prototype’s implementation I had personally carried.</p>
+                        <img src="images/TwitchVR/Me_Testing.png" alt="Testing the TwitchVR demo before export" class="case-study-image w-full">
+                        <p class="caption">Final headset testing of the Unity prototype before presentation</p>
+                    </div>
+                </section>
+
+                <section id="selected-screens" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Selected Screens</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">These screens show a few of the key ideas in the final prototype: shared viewing with friends, embedded chat and reactions, transitions into more personal viewing modes, and ways of making livestream spectatorship feel more spatial and socially alive in VR.</p>
+
+                    <div class="story-block">
+                        <img src="images/TwitchVR/FriendsAvatar.png" alt="Custom avatars for friends in TwitchVR" class="case-study-image w-full">
+                        <p class="caption">Custom avatars for friends helped reinforce the feeling of co-viewing rather than watching alone in a headset</p>
+                    </div>
+
+                    <div class="story-block">
+                        <img src="images/TwitchVR/ChatAndSeatback.png" alt="Seatback screen and reaction bubbles" class="case-study-image w-full">
+                        <p class="caption">Seatback surfaces provided a place for chat and lightweight interaction without pulling focus away from the stream itself</p>
+                    </div>
+
+                    <div class="story-block">
+                        <img src="images/TwitchVR/PersonalHeadset.png" alt="VR headset for private viewing mode" class="case-study-image w-full">
+                        <p class="caption">The in-world headset acted as a transition into a more private and immersive viewing mode</p>
+                    </div>
+
+                    <div class="story-block">
+                        <img src="images/TwitchVR/Dota2Spectator.png" alt="Dota 2 spectator mode in TwitchVR" class="case-study-image w-full">
+                        <p class="caption">The concept also explored how certain content types, like esports, could benefit from more immersive spectator perspectives in VR</p>
+                    </div>
+                </section>
+
+                <section id="outcome" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Outcome</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">TwitchVR was a short sprint, but it was an important project for me because it brought together several things I still care deeply about: immersive interaction design, social product thinking, and the challenge of turning a speculative concept into something concrete enough to experience.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">More than anything, the project showed my ability to bridge concept and implementation in VR. I was not just contributing ideas - I was helping shape the interaction model, building the virtual environment, and carrying the prototype into a functioning demo that could be experienced live.</p>
+                    <div class="text-center pt-8 border-t border-slate-200 mt-10">
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <a href="#overview" class="project-button-secondary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to top</a>
+                            <a href="index.html" class="project-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to portfolio</a>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </div>
+
+    <footer class="py-8 px-6 border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500 text-sm">Copyright 2026 Matt Golino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll(".content-section");
+        const tocLinks = document.querySelectorAll(".toc-link");
+        function updateActiveTOC() {
+            let current = "";
+            sections.forEach((section) => {
+                if (window.pageYOffset >= section.offsetTop - 150) current = section.getAttribute("id");
+            });
+            tocLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === "#" + current) link.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", updateActiveTOC);
+        updateActiveTOC();
+    </script>
+</body>
+</html>

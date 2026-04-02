@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenni Optical | Matt Golino</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        :root {
+            --zenni-teal: #0a525c;
+            --zenni-teal-soft: rgba(10, 82, 92, 0.08);
+            --zenni-deep: #0a525c;
+            --zenni-ink: #173a42;
+            --zenni-muted: #526a70;
+            --zenni-paper: #ceecf3;
+            --zenni-border: rgba(10, 82, 92, 0.16);
+            --zenni-soft-border: rgba(10, 82, 92, 0.12);
+            --zenni-tag-bg: rgba(10, 82, 92, 0.08);
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--zenni-ink); background: #fff; }
+        .nav-shell { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; }
+        .nav-brand { display: inline-flex; align-items: center; gap: 0.7rem; color: #0f172a; text-decoration: none; justify-self: start; min-width: 0; }
+        .nav-brand:hover { color: #334155; }
+        .nav-brand img { height: 38px; width: auto; display: block; flex-shrink: 0; }
+        .nav-brand-text { font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; white-space: nowrap; }
+        .toc-link { transition: all 0.2s ease; border-left: 2px solid transparent; }
+        .toc-link:hover { border-left-color: #cbd5e1; color: #0f172a; }
+        .toc-link.active { border-left-color: var(--zenni-teal); color: #0f172a; font-weight: 500; }
+        .content-section { scroll-margin-top: 100px; }
+        .banner-hero { box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.45); }
+        .project-header {
+            background: linear-gradient(to bottom, rgba(206, 236, 243, 0.9), #fff 82%);
+            border-top: 1px solid var(--zenni-border);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 10px 24px rgba(10, 82, 92, 0.05);
+        }
+        .project-header-shell { position: relative; }
+        .project-header-shell::before {
+            content: "";
+            display: block;
+            width: 96px;
+            height: 2px;
+            background: rgba(10, 82, 92, 0.3);
+            margin-bottom: 1.25rem;
+            border-radius: 999px;
+        }
+        .project-label { color: var(--zenni-teal); letter-spacing: 0.24em; }
+        .project-title { color: var(--zenni-deep); }
+        .project-subtitle, .project-meta, .project-meta-label { color: var(--zenni-muted); }
+        .project-meta { color: var(--zenni-ink); }
+        .project-tag { background: var(--zenni-tag-bg); color: var(--zenni-teal); border: 1px solid rgba(10, 82, 92, 0.1); }
+        .project-button-primary { background: var(--zenni-teal); color: #fff; box-shadow: 0 10px 22px rgba(10, 82, 92, 0.14); }
+        .project-button-primary:hover { background: #083f47; }
+        .project-button-secondary { background: rgba(10, 82, 92, 0.08); color: var(--zenni-teal); border: 1px solid rgba(10, 82, 92, 0.12); }
+        .project-button-secondary:hover { background: rgba(10, 82, 92, 0.13); }
+        .at-a-glance {
+            background: rgba(10, 82, 92, 0.05);
+            border: 1px solid rgba(10, 82, 92, 0.12);
+            border-radius: 18px;
+            padding: 1.1rem 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .at-a-glance h3 { color: var(--zenni-teal); font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem; letter-spacing: 0.01em; }
+        .at-a-glance ul { list-style: disc; margin: 0; padding-left: 1.15rem; color: var(--zenni-ink); }
+        .at-a-glance li + li { margin-top: 0.45rem; }
+        .story-block + .story-block { margin-top: 2rem; }
+        .callout {
+            background: rgba(10, 82, 92, 0.05);
+            border: 1px solid rgba(10, 82, 92, 0.12);
+            border-left: 4px solid var(--zenni-teal);
+            border-radius: 0 18px 18px 0;
+            padding: 1.1rem 1.2rem;
+        }
+        .callout h3 { color: var(--zenni-teal); font-size: 1rem; font-weight: 600; margin-bottom: 0.55rem; }
+        .launch-panel {
+            background: linear-gradient(135deg, rgba(10, 82, 92, 0.08), rgba(206, 236, 243, 0.78));
+            border: 1px solid rgba(10, 82, 92, 0.14);
+            border-radius: 18px;
+            padding: 1.2rem 1.25rem;
+            box-shadow: 0 10px 24px rgba(10, 82, 92, 0.06);
+        }
+        .launch-panel__eyebrow {
+            color: var(--zenni-teal);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            margin-bottom: 0.65rem;
+        }
+        .sub-block-title {
+            color: #0f172a;
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .research-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid rgba(10, 82, 92, 0.12);
+            border-radius: 18px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 10px 24px rgba(10, 82, 92, 0.04);
+        }
+        .research-table th,
+        .research-table td {
+            padding: 1rem 1rem;
+            text-align: left;
+            vertical-align: top;
+            border-bottom: 1px solid rgba(10, 82, 92, 0.08);
+            font-size: 0.96rem;
+            line-height: 1.5;
+            color: var(--zenni-ink);
+        }
+        .research-table th {
+            background: rgba(10, 82, 92, 0.06);
+            color: var(--zenni-deep);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .research-table tr:last-child td { border-bottom: none; }
+        .research-table td:first-child { font-weight: 600; color: #0f172a; }
+        .research-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .media-grid { display: grid; gap: 1.5rem; }
+        .media-grid .case-study-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .media-grid--align-start {
+            align-items: start;
+        }
+        .media-grid--align-start .case-study-image {
+            height: auto;
+        }
+        .case-study-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            border-radius: 14px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.1);
+        }
+        .case-study-image--contain {
+            object-fit: contain !important;
+            background: rgba(241, 237, 228, 0.72);
+            padding: 0.35rem;
+        }
+        .case-study-image--contain-tight {
+            padding: 0.1rem;
+        }
+        .case-study-image--scorecard {
+            max-height: 540px;
+            width: 100%;
+            object-fit: contain !important;
+            object-position: top center;
+            background: transparent;
+            padding: 0;
+        }
+        .analysis-pair {
+            align-items: start;
+        }
+        .analysis-pair__frame {
+            height: 416px;
+            border-radius: 14px;
+            background: rgba(241, 237, 228, 0.72);
+            overflow: hidden;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.1);
+        }
+        .analysis-pair__frame--center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .analysis-pair__frame--crop {
+            background: transparent;
+        }
+        .analysis-pair__image {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .analysis-pair__image--contain {
+            object-fit: contain;
+        }
+        .analysis-pair__image--crop {
+            object-fit: cover;
+            object-position: top center;
+        }
+        .caption { color: #64748b; font-size: 0.9rem; text-align: center; margin-top: 0.4rem; margin-bottom: 0.2rem; }
+        .artifact-card {
+            position: relative;
+            min-height: 220px;
+            border-radius: 18px;
+            border: 1px solid var(--zenni-soft-border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(206, 236, 243, 0.52));
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+            overflow: hidden;
+            padding: 1.25rem;
+            display: flex;
+            align-items: flex-end;
+        }
+        .artifact-card::before {
+            content: "";
+            position: absolute;
+            inset: 12px;
+            border-radius: 14px;
+            border: 1px dashed rgba(10, 82, 92, 0.18);
+            background: radial-gradient(circle at top left, rgba(10, 82, 92, 0.08), transparent 40%), linear-gradient(135deg, rgba(10, 82, 92, 0.03), rgba(255, 255, 255, 0));
+        }
+        .artifact-card--tall { min-height: 300px; }
+        .artifact-card--short { min-height: 180px; }
+        .artifact-card__content { position: relative; z-index: 1; max-width: 32rem; }
+        .artifact-card__eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--zenni-teal);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+        .artifact-card__title { color: var(--zenni-deep); font-size: 1.05rem; line-height: 1.45; font-weight: 500; }
+        .artifact-row-tight { gap: 1rem; }
+        .section-intro { max-width: 46rem; }
+        .section-divider { height: 1px; background: linear-gradient(to right, rgba(10, 82, 92, 0.18), rgba(203, 213, 225, 0.55), transparent); margin: 1.75rem 0 0; }
+        @media screen and (max-width: 768px) {
+            .nav-shell { grid-template-columns: 1fr; justify-items: center; }
+            .nav-brand { justify-self: center; }
+            .project-header-shell::before { margin-bottom: 1rem; }
+            .artifact-card { min-height: 190px; }
+            .artifact-card--tall { min-height: 240px; }
+            .research-table,
+            .research-table thead,
+            .research-table tbody,
+            .research-table th,
+            .research-table td,
+            .research-table tr {
+                display: block;
+            }
+            .research-table thead {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                white-space: nowrap;
+            }
+            .research-table {
+                border: none;
+                box-shadow: none;
+                background: transparent;
+            }
+            .research-table tr {
+                border: 1px solid rgba(10, 82, 92, 0.12);
+                border-radius: 16px;
+                background: #fff;
+                box-shadow: 0 10px 24px rgba(10, 82, 92, 0.04);
+                margin-bottom: 1rem;
+                overflow: hidden;
+            }
+            .research-table td {
+                border-bottom: 1px solid rgba(10, 82, 92, 0.08);
+                padding: 0.8rem 1rem;
+            }
+            .research-table tr td:last-child { border-bottom: none; }
+            .research-table td::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 0.76rem;
+                font-weight: 700;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                color: var(--zenni-teal);
+                margin-bottom: 0.25rem;
+            }
+        }
+        @media screen and (min-width: 768px) {
+            .media-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .media-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+    <nav class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 nav-shell">
+            <a href="index.html" class="nav-brand" aria-label="Matt Golino home">
+                <img src="images/VR_icon_2026.png" alt="Matt Golino VR logo">
+                <span class="nav-brand-text">Matt Golino</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="banner-hero relative h-[54vh] min-h-[420px] overflow-hidden mt-16">
+        <img src="images/Zenni/Zenni_Wallpaper.jpg" alt="Zenni Optical hero image" class="absolute inset-0 w-full h-full object-cover object-center">
+    </section>
+
+    <section class="project-header pt-10 pb-8 px-6 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="project-header-shell max-w-4xl">
+                <p class="project-label text-sm font-semibold uppercase mb-4">Senior Product Design Case Study</p>
+                <h1 class="project-title text-6xl md:text-8xl mb-6 tracking-tight font-light">Zenni Optical</h1>
+                <p class="project-subtitle text-2xl md:text-3xl mb-8 font-light">Leading product design across VR, AI-assisted e-commerce, and research practice at Zenni Optical</p>
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Product Design</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">UX Research</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">AI UX</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">VR Design</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">E-commerce</span>
+                </div>
+                <div class="grid md:grid-cols-4 gap-8 mb-8">
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Role</p><p class="project-meta text-lg">Senior Product Designer</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Company</p><p class="project-meta text-lg">Zenni Optical</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Timeline</p><p class="project-meta text-lg">2024 - 2026</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Focus</p><p class="project-meta text-lg">VR eye exam, AI product design, UX research leadership</p></div>
+                </div>
+                <div class="at-a-glance">
+                    <h3>At a glance</h3>
+                    <ul>
+                        <li>Led and contributed to multiple high-impact initiatives at Zenni across immersive product design, AI-assisted e-commerce, and UX research</li>
+                        <li>Served as a research ambassador within the UX team, running UserTesting studies and supporting teammates with research strategy and synthesis</li>
+                        <li>Helped take a VR eye exam concept from research and iteration to a published Meta app used in live screening events</li>
+                        <li>Designed for complex AI initiatives including a conversational lens customization agent and an AI-enabled search experience</li>
+                        <li>Contributed to design systems and large-scale migrations into a new Next.js-based framework</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+            <aside class="hidden lg:block lg:col-span-3">
+                <div class="sticky top-24">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wider">Contents</h3>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="toc-link block py-2 px-3 text-sm text-slate-600">Overview</a>
+                        <a href="#vr-optician" class="toc-link block py-2 px-3 text-sm text-slate-600">VR Optician / VR Eye Exam</a>
+                        <a href="#ai-lens-agent" class="toc-link block py-2 px-3 text-sm text-slate-600">AI Lens Customization Agent</a>
+                        <a href="#ai-search" class="toc-link block py-2 px-3 text-sm text-slate-600">AI Search</a>
+                        <a href="#research-ambassador" class="toc-link block py-2 px-3 text-sm text-slate-600">Research Ambassador</a>
+                        <a href="#supporting-contributions" class="toc-link block py-2 px-3 text-sm text-slate-600">Supporting Contributions</a>
+                        <a href="#outcome" class="toc-link block py-2 px-3 text-sm text-slate-600">Outcome</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <article class="lg:col-span-9">
+                <section id="overview" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Overview</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">At Zenni Optical, I worked across a mix of unusually different but complementary product challenges: immersive vision testing in VR, AI-assisted experiences for complex e-commerce flows, and UX research leadership within the product design team. Although my formal title was Senior Product Designer, my role regularly spanned product thinking, research leadership, system design, and cross-functional coordination.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">My first year focused on a VR eye exam initiative, where I worked as a hybrid PM, designer, and researcher on a small team building a consumer-facing vision testing experience in VR. In my second year, I moved onto Zenni's broader UX team, where my work shifted toward e-commerce, AI, design systems, and internal research leadership.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">Across these projects, a recurring pattern in my work was bringing structure to ambiguity: shaping product direction, building clarity around complex systems, running or supporting research, and translating emerging ideas into usable, testable, and communicable design decisions.</p>
+                    <div class="callout">
+                        <h3>My Contribution</h3>
+                        <p class="text-lg text-slate-700 leading-relaxed">I was often brought into projects that needed more than just screen design. My role regularly included a mix of product framing, UX architecture, research planning and synthesis, workflow design, communication, and stakeholder alignment. At Zenni, that meant helping teams move from ambiguity toward clearer decisions - whether that was through prototype testing in VR, structuring an AI-assisted lens flow, or leading the design of a smarter search experience.</p>
+                    </div>
+                    <div class="section-divider"></div>
+                </section>
+
+                <section id="vr-optician" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">VR Optician / VR Eye Exam</h2>
+                    <div class="launch-panel mb-8">
+                        <p class="launch-panel__eyebrow">Launched product</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-4">Zenni Vision VR launched publicly on the Meta Quest Store and continues to be used in live screening contexts.</p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="https://www.meta.com/experiences/zenni-vision-vr/8008274209197052/" target="_blank" rel="noreferrer" class="project-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Open Meta store page</a>
+                        </div>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">Project setup</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">Zenni originally brought me on to help shape a VR-based eye exam experience. This project was a strong match for my background coming out of ZenVR, because it required a similar blend of product vision, immersive interaction design, research, and technical collaboration. Our core team consisted of me, two Unity VR developers, and a clinical stakeholder who was also a practicing optometrist.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">My role extended well beyond interface design. I helped shape the product vision, prioritize features, manage team timelines, and keep the work moving as a hybrid PM, designer, and researcher. Over the course of roughly a year, we explored multiple forms of virtual vision testing, including different approaches to acuity and astigmatism assessment.</p>
+                    </div>
+                    <div class="mb-6">
+                        <img src="images/Zenni/VR_environment1.png" alt="Final VR environment for the Zenni vision testing experience" class="case-study-image w-full">
+                        <p class="caption">The final testing environment balanced clarity, calm, and visual polish around the core exam flow.</p>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">Interaction exploration</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">To get there, I explored a broad range of interaction patterns before converging on final directions. These included floating menus, player-mounted menus for both hand and controller interactions, joystick movement, controller tilt, gaze, diegetic interfaces, voice interaction, and wall-based targeting. This exploration helped us evaluate what felt teachable, usable, and appropriate for a vision testing experience.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">I also designed the broader product shell around the experience, including tutorial and instruction flows, settings, progress feedback, main menu states, onboarding and offboarding, and a guardian-style guidance system that kept users oriented in the correct part of the virtual environment.</p>
+                    </div>
+                    <div class="media-grid media-grid--2 mb-6">
+                        <div>
+                            <img src="images/Zenni/VRInteractionModalitiesExploration.png" alt="Board showing explored VR interaction paradigms for the Zenni app" class="case-study-image case-study-image--contain w-full">
+                            <p class="caption">Early interaction studies compared multiple input paradigms before we narrowed to directions that felt teachable and reliable in VR.</p>
+                        </div>
+                        <div>
+                            <img src="images/Zenni/VR test in progress.webp" alt="Zenni VR vision test in progress inside the final environment" class="case-study-image w-full">
+                            <p class="caption">A representative in-product test state, showing how target presentation, answer selection, and progress feedback worked together.</p>
+                        </div>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">From prototype to live deployment</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">Beyond interaction design, I also designed and built the surrounding 3D environment using Unity, Blender, and Adobe texture tooling. That work helped shape the application as a polished immersive product rather than just a functional testing utility.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">A major part of the process involved in-person prototype testing. I recruited and ran sessions with real glasses wearers, put participants into the headset myself, observed their interactions, captured notes and feedback, and brought those findings back into the next iteration cycle. I also wrote and voiced parts of the in-headset script and helped represent the product at live eye screening events where Zenni used the application in the field.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">The result was a working VR application that moved beyond prototyping into real-world use.</p>
+                    </div>
+                    <div class="callout mb-8">
+                        <h3>Design ownership across the VR experience</h3>
+                        <ul class="list-disc pl-5 text-lg text-slate-700 leading-relaxed">
+                            <li>Explored multiple interaction paradigms before selecting final test directions</li>
+                            <li>Designed and built the 3D environment in Unity, Blender, and Adobe texture tooling</li>
+                            <li>Created tutorial, instruction, settings, and menu flows around the core tests</li>
+                            <li>Designed progress feedback, onboarding/offboarding, and user guidance systems</li>
+                            <li>Helped shape the product as a full VR experience, not just a set of isolated tests</li>
+                        </ul>
+                    </div>
+                    <div class="mb-4">
+                        <img src="images/Zenni/Zenni_Holiday_Heroes.jpg" alt="Zenni Vision VR being used during a live screening event" class="case-study-image w-full">
+                    </div>
+                    <p class="caption">The app was used at live screening events, where I helped administer the experience directly with participants.</p>
+                    <div class="aspect-video mt-10 rounded-2xl overflow-hidden shadow-lg">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ceOmbW0Gz6Q" title="Zenni Vision VR user demo video" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <p class="caption">A recorded walkthrough gives a better sense of the flow, pacing, and feel of the live product.</p>
+                </section>
+
+                <section id="ai-lens-agent" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">AI Lens Customization Agent</h2>
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">One of Zenni's biggest UX challenges was the lens customization flow: a complex, high-friction experience where users often struggled to understand lens types, coatings, prescriptions, pricing tradeoffs, and upgrade decisions. This initiative explored whether a virtual optician could guide users through that complexity - answering contextual questions and helping them make more confident choices inside the existing flow.</p>
+                    </div>
+                    <div class="callout mb-8">
+                        <h3>Research and design contributions</h3>
+                        <ul class="list-disc pl-5 text-lg text-slate-700 leading-relaxed">
+                            <li>Led the survey, interview follow-up, cleaning, analysis, and synthesis work</li>
+                            <li>Identified confusion points in the existing lens customization flow and trust boundaries around AI assistance</li>
+                            <li>Turned findings into UX guidelines, north stars, and a heuristic scorecard for evaluation</li>
+                            <li>Explored a contextual virtual optician that could guide users without replacing the flow</li>
+                            <li>Helped define both an MVP path and a broader long-term assistant vision</li>
+                        </ul>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">Research Foundation</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">I led the research foundation for this work. That included a large UserTesting survey with more than 100 initial responses, which I manually cleaned down to a final sample of 85 participants. The research focused on two main areas: where users were getting confused in the existing lens customization flow, and how comfortable they were with AI assistance in an e-commerce context more broadly.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">I also ran follow-up unmoderated interviews across three familiarity groups - highly familiar with AI, moderately familiar, and unfamiliar - to understand what kinds of help users would trust from an assistant during lens customization, and where they wanted structure versus control.</p>
+                        <img src="images/Zenni/AI_Agent_SurveyData.png" alt="Survey dataset and follow-up study structure for the AI lens customization research" class="case-study-image case-study-image--contain w-full">
+                        <p class="caption">The research foundation included a large cleaned survey dataset and follow-up study structure focused on confusion points in lens customization and user comfort with AI assistance.</p>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">From Insights to Design Principles</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">I synthesized the survey and interview data through thematic analysis and supporting quantitative review, then translated the findings into a structured set of UX findings and design guidelines for AI in this context. Those guidelines focused on three broad areas: ease and flexibility of interaction, proactive relevance and intelligence, and trust, transparency, and responsiveness.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">From there, I created a heuristic scorecard that could be used to evaluate future assistant concepts against those principles. This helped turn the research into something directly actionable for design, rather than leaving it at the level of insight alone.</p>
+                        <div class="media-grid media-grid--2 analysis-pair mb-6">
+                            <div>
+                                <div class="analysis-pair__frame analysis-pair__frame--center">
+                                    <img src="images/Zenni/AI_Agent_ThematicAnalysisInsights.png" alt="Thematic analysis insights for the AI lens customization concept" class="analysis-pair__image analysis-pair__image--contain">
+                                </div>
+                                <p class="caption">Thematic analysis translated the raw research into recurring problem areas, opportunity spaces, and clearer design implications for an AI assistant.</p>
+                            </div>
+                            <div>
+                                <div class="analysis-pair__frame analysis-pair__frame--crop">
+                                    <img src="images/Zenni/AI_Agent_HeuristicScorecard.png" alt="Heuristic scorecard for evaluating virtual optician concepts" class="analysis-pair__image analysis-pair__image--crop">
+                                </div>
+                                <p class="caption">Those findings were then formalized into a heuristic scorecard that could be used to evaluate future assistant concepts against the core UX principles.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">Designing the Virtual Optician</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">On the design side, I explored how a virtual optician could live alongside the existing lens customization flow rather than replacing it outright. My own direction leaned toward a three-panel layout, where the assistant could remain contextually aware of the current step, reference information already provided by the user, and guide decisions through a mix of proactive prompts, suggested question pills, structured response options, and richer output formats.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">The goal was not just to make the assistant conversational, but useful inside a constrained purchase flow. That meant thinking through when it should ask questions, when it should surface recommendations, how it could compare options, and how it might output different response types such as recommendation cards, comparison tables, or product-specific guidance.</p>
+                        <img src="images/Zenni/AI_Agent_QuestionsAndSuggestionButtons.png" alt="Virtual optician concepts using guided questions and suggestion buttons" class="case-study-image case-study-image--contain w-full">
+                        <p class="caption">These concepts explored how the assistant could stay context-aware within the existing flow, combining guided questioning, suggested prompts, and recommendation formats.</p>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">Toward a Short-Term MVP and Long-Term Vision</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">The project also included a distinction between a short-term MVP and a broader long-term product vision. In the near term, the assistant could function as a more lightweight contextual guide layered into the existing experience. In the longer term, we began defining a richer component system and response framework that would allow the assistant to become more dynamic, interactive, and genuinely expert-like over time.</p>
+                        <img src="images/Zenni/AI_Agent_3PanelExploration.png" alt="Three-panel virtual optician exploration" class="case-study-image case-study-image--contain w-full">
+                        <p class="caption">A three-panel direction explored how the assistant could remain persistently available without fully taking over the lens customization experience.</p>
+                    </div>
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">This project was one of the clearest examples of how I like to work: grounding an ambiguous AI concept in real user research, turning that research into concrete design principles and evaluative tools, and then using those foundations to shape a product vision with both near-term practicality and longer-term ambition.</p>
+                    </div>
+                </section>
+
+                <section id="ai-search" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">AI Search</h2>
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">Later, I became the primary designer on an AI search initiative focused on making Zenni's search experience feel more intelligent and flexible. The core challenge was not only enabling more natural-language search, but helping users understand what was different about it: how to discover AI mode, what kinds of queries it could support, how long it might take, and how AI-generated results should appear without overwhelming the existing shopping experience. My role extended from early concept framing through high-fidelity design, where I built polished Figma mockups for handoff and translated the system into both web and mobile patterns.</p>
+                    </div>
+                    <div class="callout mb-8">
+                        <h3>Why this project matters</h3>
+                        <p class="text-lg text-slate-700 leading-relaxed">This project reflects the kind of product design work I increasingly enjoy most: taking a technically ambitious capability and shaping the UX around comprehension, trust, behavior change, and real-world usability.</p>
+                    </div>
+                    <div class="mb-8">
+                        <img src="images/Zenni/AI_Search_CompAnalysis.png" alt="Competitive analysis of AI-enabled search experiences" class="case-study-image case-study-image--contain w-full">
+                        <p class="caption">Competitive research helped identify how other companies signaled AI capabilities, introduced new search behaviors, and balanced novelty with familiarity.</p>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">Shaping AI Search Entry</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">A major part of the work centered on discoverability and onboarding. I explored how AI mode could be introduced directly within the homepage search bar without permanently increasing its footprint on a tightly controlled page. The final direction used an expandable vertical search state, a clear AI mode toggle, subtle visual changes such as a gradient stroke and specialized search button, and a suggestion tray that helped signal the system's capabilities without adding too much clutter.</p>
+                        <img src="images/Zenni/AI_Search_Wireframes1.png" alt="Homepage AI Search entry explorations" class="case-study-image case-study-image--contain w-full">
+                        <p class="caption">Homepage search explorations focused on discoverability, footprint, and how AI mode could be introduced without permanently expanding the search bar.</p>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">Designing the Thinking State</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">Because AI Search could take 10 or more seconds to return results, I also designed an intermediate "thinking" state rather than dropping users immediately onto a loading product listing page. I proposed using the existing search drawer pattern to show progressive thinking updates, lightweight animation, and staged system feedback so the wait felt intentional and legible rather than broken or ambiguous.</p>
+                        <img src="images/Zenni/AI_Search_Wireframes2.png" alt="AI Search thinking state wireframes" class="case-study-image case-study-image--contain w-full">
+                        <p class="caption">The thinking state used the existing search drawer pattern to communicate progress, reduce ambiguity, and make the slower AI flow feel intentional.</p>
+                    </div>
+                    <div class="story-block">
+                        <p class="sub-block-title">Integrating AI Results into the PLP</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">The final phase focused on how AI-generated results should appear once users reached the product listing page. I explored multiple levels of reasoning visibility, takeover, and AI labeling before landing on a relatively minimal, collapsible reasoning box at the top of the results. That approach let the AI stay visible and explainable without disrupting the core shopping flow too aggressively.</p>
+                        <img src="images/Zenni/AI_Search_Wireframes3.png" alt="AI Search results integration wireframes" class="case-study-image case-study-image--contain w-full">
+                        <p class="caption">Results-page explorations tested how much AI reasoning to show, how strongly to label AI-generated results, and how much of the PLP the system should take over.</p>
+                    </div>
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">This project was especially meaningful because it treated AI Search as more than a technical feature. It required designing the full behavioral arc around it - discovery, expectation-setting, latency communication, and results interpretation - so the experience felt understandable and trustworthy in a live e-commerce context. I carried that work into high-fidelity Figma designs for developer handoff, creating reusable components and responsive web and mobile variants, and iterated on the designs through feedback from the PM, the engineering lead, and a broader critique workshop with the UX design team.</p>
+                        <img src="images/Zenni/AI_Search_EarlyIteration_Results.png" alt="Earlier AI Search results page iterations" class="case-study-image case-study-image--contain w-full">
+                        <p class="caption">Earlier results-page concepts explored more assertive AI takeover patterns before the design narrowed toward a lighter, collapsible explanation model.</p>
+                    </div>
+                </section>
+
+                <section id="research-ambassador" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Research Ambassador</h2>
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">Alongside my product work, I also became an informal research ambassador within the UX team. Although Zenni had a dedicated research organization, I frequently helped initiate studies, shape research questions, choose methods, and support teammates in running and synthesizing user research across projects.</p>
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">In practice, that role meant more than conducting my own studies. It meant helping make research more accessible and actionable inside the design team - whether through surveys, unmoderated interviews, usability tests, competitive audits, or internal methods support. Over time, this became a meaningful part of how I contributed: not just producing insights, but helping create a stronger research culture around the work.</p>
+                    </div>
+                    <div class="callout mb-8">
+                        <h3>What this role included</h3>
+                        <ul class="list-disc pl-5 text-lg text-slate-700 leading-relaxed">
+                            <li>Ran surveys, unmoderated interviews, usability tests, and competitive audits</li>
+                            <li>Supported teammates with research planning and execution</li>
+                            <li>Synthesized findings into design recommendations and next steps</li>
+                            <li>Helped increase team confidence in selecting and using research methods</li>
+                            <li>Acted as a research-minded bridge within the product design organization</li>
+                        </ul>
+                    </div>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">A representative sample of the research efforts I supported or led across Zenni's UX team:</p>
+                    <div class="research-table-wrap mb-6">
+                        <table class="research-table">
+                            <thead>
+                                <tr>
+                                    <th>Project</th>
+                                    <th>Method</th>
+                                    <th>Focus</th>
+                                    <th>Outcome / Impact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Project">Lens Customization Clarity Survey for AI Foundation</td>
+                                    <td data-label="Method">Quantitative Survey</td>
+                                    <td data-label="Focus">Understand what users need to know to feel confident through the lens customization flow</td>
+                                    <td data-label="Outcome / Impact">Identified top questions at each step; findings informed Gemini agent prompting and UX copy</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Project">AI Shopping / Interaction Interviews</td>
+                                    <td data-label="Method">Unmoderated Interviews</td>
+                                    <td data-label="Focus">Explore user expectations and reactions to AI shopping assistance</td>
+                                    <td data-label="Outcome / Impact">Helped shape broader AI interaction thinking across the team</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Project">LC Answer Validation</td>
+                                    <td data-label="Method">Survey + Unmoderated Interviews</td>
+                                    <td data-label="Focus">Validate how users interpret lens-related questions and answers</td>
+                                    <td data-label="Outcome / Impact">Informed refinement of survey content, copy guidance, and answer framing</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Project">Checkout Redesign A/B Evaluation</td>
+                                    <td data-label="Method">Usability Testing</td>
+                                    <td data-label="Focus">Gauge usability perception of the new checkout flow</td>
+                                    <td data-label="Outcome / Impact">Users responded positively to chunking and visuals; findings helped finalize the redesign</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Project">Cart V2 Usability Test</td>
+                                    <td data-label="Method">Unmoderated Interviews</td>
+                                    <td data-label="Focus">Evaluate clarity, discoverability, upsells, promo messaging, and purchase confidence in the new cart</td>
+                                    <td data-label="Outcome / Impact">Produced synthesis and report to inform iteration readiness before checkout handoff</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Project">AI Search Agent - Competitive Audit</td>
+                                    <td data-label="Method">Competitive Analysis</td>
+                                    <td data-label="Focus">Analyze e-commerce AI search patterns and emerging design features</td>
+                                    <td data-label="Outcome / Impact">Identified patterns from companies like Alibaba that informed AI Search design directions</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Project">UX Methods Workshop Planning</td>
+                                    <td data-label="Method">Internal Enablement</td>
+                                    <td data-label="Focus">Increase team confidence in selecting and using research methods</td>
+                                    <td data-label="Outcome / Impact">Supported design-team research autonomy as part of mentorship and leadership work</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-sm text-slate-500 leading-relaxed">This sample reflects the breadth of research work I supported or led across AI, purchase path, checkout, cart, discovery, and internal team enablement.</p>
+                </section>
+
+                <section id="supporting-contributions" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Supporting Contributions</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">In addition to the flagship initiatives above, I also contributed to Zenni's design system and broader product infrastructure work. That included helping develop and refine Figma components, contributing to the shared library, and supporting migration work into a newer Next.js-based framework. While this was supporting work rather than the center of the story, it strengthened my fluency in scalable systems thinking, implementation-aware design, and developer handoff within a large e-commerce environment.</p>
+                </section>
+
+                <section id="outcome" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Outcome</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">Zenni was one of the broadest product design environments I have worked in. It asked me to move across very different problem spaces - immersive health-tech, complex e-commerce systems, AI-assisted experiences, and team-level research support - while maintaining a consistent ability to structure ambiguity and move work forward.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">What I value most about this body of work is that it shows range without losing coherence. Across these projects, the common thread was not the specific domain, but the role I was playing: helping translate messy opportunities into clearer product direction, stronger UX, and more grounded decisions.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">For me, the page represents an important bridge between my earlier immersive and research-heavy work and the more mature product design, systems thinking, and AI-focused work I want to keep doing.</p>
+                    <div class="text-center pt-8 border-t border-slate-200 mt-10">
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <a href="#overview" class="project-button-secondary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to top</a>
+                            <a href="index.html" class="project-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to portfolio</a>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </div>
+
+    <footer class="py-8 px-6 border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500 text-sm">Copyright 2026 Matt Golino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll(".content-section");
+        const tocLinks = document.querySelectorAll(".toc-link");
+        function updateActiveTOC() {
+            let current = "";
+            sections.forEach((section) => {
+                if (window.pageYOffset >= section.offsetTop - 150) current = section.getAttribute("id");
+            });
+            tocLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === "#" + current) link.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", updateActiveTOC);
+        updateActiveTOC();
+    </script>
+</body>
+</html>

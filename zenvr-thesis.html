@@ -1,0 +1,339 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenVR Thesis | Matt Golino</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        :root {
+            --zenvr-kombu: #344942;
+            --zenvr-incense: #373D4D;
+            --zenvr-sand: #F1EDE4;
+            --zenvr-border: rgba(52, 73, 66, 0.16);
+            --zenvr-soft-border: rgba(55, 61, 77, 0.12);
+            --zenvr-tag-bg: rgba(52, 73, 66, 0.08);
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--zenvr-incense); background: #fff; }
+        .nav-shell { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; }
+        .nav-brand { display: inline-flex; align-items: center; gap: 0.7rem; color: #0f172a; text-decoration: none; justify-self: start; min-width: 0; }
+        .nav-brand:hover { color: #334155; }
+        .nav-brand img { height: 38px; width: auto; display: block; flex-shrink: 0; }
+        .nav-brand-text { font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; white-space: nowrap; }
+        .toc-link { transition: all 0.2s ease; border-left: 2px solid transparent; }
+        .toc-link:hover { border-left-color: #cbd5e1; color: #0f172a; }
+        .toc-link.active { border-left-color: #0f172a; color: #0f172a; font-weight: 500; }
+        .case-study-image { border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+        .content-section { scroll-margin-top: 100px; }
+        .banner-hero {
+            box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.45);
+        }
+        .project-header {
+            background: linear-gradient(to bottom, rgba(241, 237, 228, 0.92), #fff 82%);
+            border-top: 1px solid var(--zenvr-border);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 10px 24px rgba(55, 61, 77, 0.05);
+        }
+        .project-header-shell {
+            position: relative;
+        }
+        .project-header-shell::before {
+            content: "";
+            display: block;
+            width: 96px;
+            height: 2px;
+            background: rgba(52, 73, 66, 0.3);
+            margin-bottom: 1.25rem;
+            border-radius: 999px;
+        }
+        .project-label {
+            color: var(--zenvr-kombu);
+            letter-spacing: 0.24em;
+        }
+        .project-title {
+            color: var(--zenvr-kombu);
+        }
+        .project-subtitle,
+        .project-meta,
+        .project-meta-label {
+            color: var(--zenvr-incense);
+        }
+        .zenvr-tag {
+            background: var(--zenvr-tag-bg);
+            color: var(--zenvr-kombu);
+            border: 1px solid rgba(52, 73, 66, 0.1);
+        }
+        .zenvr-button-primary {
+            background: var(--zenvr-kombu);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(52, 73, 66, 0.14);
+        }
+        .zenvr-button-primary:hover {
+            background: #2c3f39;
+        }
+        .zenvr-button-secondary {
+            background: rgba(52, 73, 66, 0.08);
+            color: var(--zenvr-kombu);
+            border: 1px solid rgba(52, 73, 66, 0.12);
+        }
+        .zenvr-button-secondary:hover {
+            background: rgba(52, 73, 66, 0.13);
+        }
+        .at-a-glance {
+            background: rgba(52, 73, 66, 0.05);
+            border: 1px solid rgba(52, 73, 66, 0.12);
+            border-radius: 18px;
+            padding: 1.1rem 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .at-a-glance h3 {
+            color: var(--zenvr-kombu);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.01em;
+        }
+        .at-a-glance ul {
+            list-style: disc;
+            margin: 0;
+            padding-left: 1.15rem;
+            color: var(--zenvr-incense);
+        }
+        .at-a-glance li + li {
+            margin-top: 0.45rem;
+        }
+        .results-callout {
+            background: rgba(52, 73, 66, 0.05);
+            border: 1px solid rgba(52, 73, 66, 0.12);
+            border-radius: 18px;
+            padding: 1.1rem 1.2rem;
+            margin-top: 2rem;
+        }
+        .results-callout h4 {
+            color: var(--zenvr-kombu);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.01em;
+        }
+        .results-callout ul {
+            list-style: disc;
+            margin: 0;
+            padding-left: 1.15rem;
+            color: var(--zenvr-incense);
+        }
+        .results-callout li + li {
+            margin-top: 0.45rem;
+        }
+        @media screen and (max-width: 768px) {
+            .nav-shell { grid-template-columns: 1fr; justify-items: center; }
+            .nav-brand { justify-self: center; }
+            .project-header-shell::before {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+    <nav class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 nav-shell">
+            <a href="index.html" class="nav-brand" aria-label="Matt Golino home">
+                <img src="images/VR_icon_2026.png" alt="Matt Golino VR logo">
+                <span class="nav-brand-text">Matt Golino</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="banner-hero relative h-[54vh] min-h-[420px] overflow-hidden mt-16">
+        <img src="images/ZenVR/physicalAffinityMap.png" alt="ZenVR physical affinity map" class="absolute inset-0 w-full h-full object-cover object-top">
+    </section>
+
+    <section class="project-header pt-10 pb-8 px-6 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="project-header-shell max-w-4xl">
+                <p class="project-label text-sm font-semibold uppercase mb-4">ZenVR Case Study Part 1</p>
+                <h1 class="project-title text-6xl md:text-8xl mb-6 tracking-tight font-light">ZenVR Thesis</h1>
+                <p class="project-subtitle text-2xl md:text-3xl mb-8 font-light">The Georgia Tech MS-HCI research, prototype, evaluation, and publication that established the foundation for ZenVR</p>
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">UX Research</span>
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">HCI Thesis</span>
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">Prototype Design</span>
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">Longitudinal Study</span>
+                    <span class="zenvr-tag px-4 py-2 text-sm rounded-full font-medium">CHI Publication</span>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 mb-8">
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Timeline</p><p class="project-meta text-lg">2019 - 2022</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Context</p><p class="project-meta text-lg">Georgia Tech MS-HCI</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Outcome</p><p class="project-meta text-lg">Peer-reviewed CHI 2022 Publication</p></div>
+                </div>
+                <div class="at-a-glance">
+                    <h3>At a glance</h3>
+                    <ul>
+                        <li>Led core research, synthesis, prototype creation, and evaluation for my Georgia Tech MS-HCI thesis</li>
+                        <li>Conducted formative research with meditation teachers and learners to define design opportunities</li>
+                        <li>Built a functional Unity VR prototype and authored lesson scripts, audio, and interaction flow</li>
+                        <li>Ran heuristic evaluations and supported a six-week longitudinal study with 150 total visits</li>
+                        <li>Produced findings showing gains in mindfulness and meditation ability, later published at CHI 2022</li>
+                    </ul>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://dl.acm.org/doi/abs/10.1145/3491102.3502035" target="_blank" rel="noreferrer" class="zenvr-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Read Published Paper</a>
+                    <a href="zenvr-startup.html" class="zenvr-button-secondary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">View Part 2 - Startup evolution</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+            <aside class="hidden lg:block lg:col-span-3">
+                <div class="sticky top-24">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wider">Contents</h3>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="toc-link block py-2 px-3 text-sm text-slate-600">Overview</a>
+                        <a href="#thesis-origin" class="toc-link block py-2 px-3 text-sm text-slate-600">Thesis Origin</a>
+                        <a href="#formative" class="toc-link block py-2 px-3 text-sm text-slate-600">Formative Research</a>
+                        <a href="#design" class="toc-link block py-2 px-3 text-sm text-slate-600">Design & Prototyping</a>
+                        <a href="#evaluation" class="toc-link block py-2 px-3 text-sm text-slate-600">Prototype Evaluation</a>
+                        <a href="#synthesis" class="toc-link block py-2 px-3 text-sm text-slate-600">Data Synthesis</a>
+                        <a href="#publication" class="toc-link block py-2 px-3 text-sm text-slate-600">Publication</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <article class="lg:col-span-9">
+                <section id="overview" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Overview</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">ZenVR began as my Master's thesis project in Georgia Tech's MS-HCI program. The challenge was to translate meditation instruction into a VR learning system that could meaningfully support novice practice over time. This page focuses on the research and design process that established the conceptual and experiential foundation for everything the startup later became.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">The project followed a full research-to-design-to-evaluation arc: formative research, synthesis into a curriculum and prototype, heuristic evaluation, a six-week longitudinal study with 150 visits, and final data synthesis that culminated in a peer-reviewed CHI publication in 2022.</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <img src="images/ZenVR/MastersResearchOverview.png" alt="Masters research overview" class="case-study-image w-full">
+                        <img src="images/ZenVR/MastersResearchTimeline.png" alt="Masters research timeline" class="case-study-image w-full">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center mt-4">Overview of the thesis process and project timeline.</p>
+                </section>
+
+                <section id="thesis-origin" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">The Master's Thesis Project</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">This thesis asked a difficult design question: how can meditation, which is often taught through subtle, embodied guidance from a teacher, be translated into a VR learning experience for novices? Rather than treating VR as a relaxation gimmick, the project explored whether it could function as a structured training medium for building foundational meditation skills.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">That framing shaped the work from the start. ZenVR was designed not just as a calming environment, but as a guided learning system - one grounded in formative research, tested through longitudinal use, and ultimately formalized through peer-reviewed publication.</p>
+                </section>
+
+                <section id="formative" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Formative Research</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">To inform ZenVR's initial design, we studied meditation teachers, expert practitioners, and novices to understand how beginners learn, where they struggle, and what kinds of support real instructors use to help them progress.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">The research produced a substantial body of qualitative and quantitative findings, which we translated into ZenVR’s curriculum, prototype design, and overall learning framework.</p>
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+                        <h4 class="font-semibold text-slate-900 mb-2">My Contribution</h4>
+                        <p class="text-slate-700">I co-developed the interview and survey instruments, conducted semi-structured interviews across participant groups, and played a major role in synthesis. That included extensive affinity mapping and translating findings into design implications, sketches, and curriculum structure.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6 mb-4">
+                        <img src="images/ZenVR/MixedMethods.png" alt="Mixed methods research approach for ZenVR" class="case-study-image w-full">
+                        <img src="images/ZenVR/physicalAffinityMap.png" alt="Physical affinity mapping for ZenVR research" class="case-study-image w-full">
+                        <img src="images/ZenVR/MastersInterviewsInstructors.png" alt="ZenVR interviews with instructors" class="case-study-image w-full">
+                        <img src="images/ZenVR/MastersInterviewsMeditators.png" alt="ZenVR interviews with meditators" class="case-study-image w-full">
+                        <img src="images/ZenVR/MastersLearnersJourney.png" alt="Meditation learner journey created for ZenVR" class="case-study-image w-full md:col-span-2">
+                    </div>
+                    <p class="text-sm text-slate-500 text-center">The work began with rich mixed-methods research and affinity mapping, then evolved into clearer digital synthesis and learner journey framing.</p>
+                </section>
+
+                <section id="design" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Design and Prototyping</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">Using the findings from formative research, we translated the needs of novice meditators into a functional VR learning prototype. Rather than designing ZenVR as a passive relaxation experience, we structured it as a guided training system: eight meditation lessons with scripted instruction, supportive audio, and immersive cues intended to help users build foundational meditation skills over time. The prototype was designed to make abstract aspects of meditation feel more approachable, teachable, and engaging for beginners.</p>
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+                        <h4 class="font-semibold text-slate-900 mb-2">My Contribution</h4>
+                        <p class="text-slate-700">I authored the lesson scripts, voiced and edited the audio, and built the Unity-based VR prototype. That included constructing the environment, integrating VR interaction, and assembling each lesson with motion-capture animation and supporting effects.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6 items-start">
+                        <div class="grid gap-6">
+                            <img src="images/ZenVR/MastersDesignSketches.png" alt="ZenVR design sketches" class="case-study-image w-full">
+                            <img src="images/ZenVR/MastersPrototype.png" alt="ZenVR Unity prototype" class="case-study-image w-full">
+                        </div>
+                        <img src="images/ZenVR/VoiceRecording.png" alt="Voice recording process for meditation lessons" class="case-study-image w-full">
+                    </div>
+                </section>
+
+                <section id="evaluation" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Prototype Evaluation</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">We used heuristic evaluations with meditation and VR experts to identify issues in usability, instructional flow, and content framing before beginning the longitudinal study. That feedback helped us refine the first prototype and better prepare it for repeated use over time.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">We then ran a six-week longitudinal study with 15 participants attending two sessions per week, for a total of 150 visits. Because participants moved through the lessons over time, the study created an unusually fast feedback loop: insights from earlier sessions could be incorporated into later ones, allowing us to actively refine the evolving prototype while also evaluating the broader learning experience.</p>
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+                        <h4 class="font-semibold text-slate-900 mb-2">My Contribution</h4>
+                        <p class="text-slate-700">I designed the heuristic evaluation metrics, administered the expert reviews, facilitated about half of the study visits, and helped carry feedback from earlier sessions into later lesson revisions.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <img src="images/ZenVR/MastersHeuristics.png" alt="ZenVR heuristic evaluation materials" class="case-study-image w-full">
+                        <img src="images/ZenVR/MastersLongitudinal.png" alt="ZenVR six-week longitudinal study" class="case-study-image w-full">
+                    </div>
+                    <div class="results-callout">
+                        <h4>Study Outcomes</h4>
+                        <ul>
+                            <li>15 novice learners over 6 weeks</li>
+                            <li>150 total study visits with no attrition</li>
+                            <li>Statistically significant improvements in mindfulness</li>
+                            <li>Statistically significant improvements in self-reported meditation ability</li>
+                            <li>All participants practiced between visits, and 13 of 15 were still meditating independently at follow-up</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="synthesis" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Data Synthesis</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">The final phase of the project focused on synthesizing qualitative and quantitative findings from 150 study visits into clear design and research conclusions. This meant identifying patterns in how participants learned, where the prototype was most effective, and which parts of the experience needed refinement, then translating those insights into both a final presentation and the CHI 2022 paper. The synthesis work also helped define which aspects of ZenVR were strong enough to carry forward into future product development.</p>
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+                        <h4 class="font-semibold text-slate-900 mb-2">My Contribution</h4>
+                        <p class="text-slate-700">I played a major role in the final synthesis, spending dozens of hours organizing qualitative data into large digital affinity maps and drawing conclusions section by section. I also helped shape the final presentation and contributed to writing the CHI 2022 paper.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6 mb-4">
+                        <img src="images/ZenVR/MastersLessonAffinityMap.gif" alt="ZenVR lesson-level affinity map" class="case-study-image w-full">
+                        <img src="images/ZenVR/MastersOverallAffinity.gif" alt="ZenVR overall affinity map" class="case-study-image w-full">
+                        <img src="images/ZenVR/MastersQuant.png" alt="ZenVR quantitative results" class="case-study-image w-full">
+                        <a href="https://dl.acm.org/doi/abs/10.1145/3491102.3502035" target="_blank" rel="noreferrer"><img src="images/ZenVR/MastersPaperPublication.png" alt="ZenVR CHI publication" class="case-study-image w-full"></a>
+                    </div>
+                    <p class="text-sm text-slate-500 text-center">The final synthesis connected the qualitative story, the quantitative outcomes, and the academic publication that formalized the work.</p>
+                </section>
+
+                <section id="publication" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Publication and Featured Coverage</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">The project culminated in a <a href="https://dl.acm.org/doi/abs/10.1145/3491102.3502035" target="_blank" rel="noreferrer" class="underline decoration-[rgba(52,73,66,0.35)] underline-offset-4 hover:text-slate-900 hover:decoration-[rgba(52,73,66,0.7)] transition-colors">peer-reviewed CHI 2022 publication</a>, which formalized the research contribution behind ZenVR and positioned the work within broader HCI conversations around technology-supported meditation, learning, and wellbeing.</p>
+                    <div class="aspect-video mb-8 rounded-2xl overflow-hidden shadow-lg">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/gUB5UxsuA6w?si=tWH0pUaKNkQlsgsk" title="Georgia Tech feature on ZenVR" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <p class="text-sm text-slate-500 text-center mb-8">Featured video and article by Georgia Tech.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">This thesis page captures the research origin of ZenVR: the thesis framing, the design process, the evaluation cycle, and the publication work that established the project's credibility and future trajectory. The startup page picks up where this one leaves off, following how those foundations became a real product and company.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="zenvr-startup.html" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-100 text-slate-900 rounded-full hover:bg-slate-200 transition-colors">See how the thesis became a startup</a>
+                        <a href="index.html" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors">Back to portfolio</a>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </div>
+
+    <footer class="py-8 px-6 border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500 text-sm">© 2026 Matt Golino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll(".content-section");
+        const tocLinks = document.querySelectorAll(".toc-link");
+        function updateActiveTOC() {
+            let current = "";
+            sections.forEach((section) => {
+                if (window.pageYOffset >= section.offsetTop - 150) current = section.getAttribute("id");
+            });
+            tocLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === "#" + current) link.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", updateActiveTOC);
+        updateActiveTOC();
+    </script>
+</body>
+</html>

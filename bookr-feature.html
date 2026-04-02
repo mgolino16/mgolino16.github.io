@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookr | Matt Golino</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        :root {
+            --bookr-blue: #2c6ea3;
+            --bookr-deep: #1f3344;
+            --bookr-paper: #f4f8fb;
+            --bookr-muted: #5b6c79;
+            --bookr-border: rgba(44, 110, 163, 0.16);
+            --bookr-tag-bg: rgba(44, 110, 163, 0.08);
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--bookr-deep); background: #fff; }
+        .nav-shell { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; }
+        .nav-brand { display: inline-flex; align-items: center; gap: 0.7rem; color: #0f172a; text-decoration: none; justify-self: start; min-width: 0; }
+        .nav-brand:hover { color: #334155; }
+        .nav-brand img { height: 38px; width: auto; display: block; flex-shrink: 0; }
+        .nav-brand-text { font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; white-space: nowrap; }
+        .toc-link { transition: all 0.2s ease; border-left: 2px solid transparent; }
+        .toc-link:hover { border-left-color: #cbd5e1; color: #0f172a; }
+        .toc-link.active { border-left-color: var(--bookr-blue); color: #0f172a; font-weight: 500; }
+        .case-study-image { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; box-shadow: 0 8px 28px rgba(15, 23, 42, 0.1); }
+        .case-study-image--contain { object-fit: contain !important; background: rgba(244, 248, 251, 0.95); padding: 0.35rem; }
+        .content-section { scroll-margin-top: 100px; }
+        .banner-hero { position: relative; box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.55); }
+        .banner-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to right, rgba(31, 51, 68, 0.16), rgba(31, 51, 68, 0.03)), linear-gradient(to top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)); pointer-events: none; }
+        .project-header { background: linear-gradient(to bottom, rgba(244, 248, 251, 0.96), #fff 82%); border-top: 1px solid var(--bookr-border); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 10px 24px rgba(31, 51, 68, 0.05); }
+        .project-header-shell { position: relative; }
+        .project-header-shell::before { content: ""; display: block; width: 96px; height: 2px; background: rgba(44, 110, 163, 0.35); margin-bottom: 1.25rem; border-radius: 999px; }
+        .project-label { color: var(--bookr-blue); letter-spacing: 0.24em; }
+        .project-title { color: var(--bookr-deep); }
+        .project-subtitle, .project-meta, .project-meta-label { color: var(--bookr-muted); }
+        .project-meta { color: var(--bookr-deep); }
+        .project-tag { background: var(--bookr-tag-bg); color: var(--bookr-blue); border: 1px solid rgba(44, 110, 163, 0.1); }
+        .project-button-primary { background: var(--bookr-blue); color: #fff; box-shadow: 0 10px 22px rgba(44, 110, 163, 0.16); }
+        .project-button-primary:hover { background: #245b87; }
+        .project-button-secondary { background: rgba(44, 110, 163, 0.06); color: var(--bookr-blue); border: 1px solid rgba(44, 110, 163, 0.12); }
+        .project-button-secondary:hover { background: rgba(44, 110, 163, 0.11); }
+        .at-a-glance { background: rgba(44, 110, 163, 0.045); border: 1px solid rgba(44, 110, 163, 0.12); border-radius: 18px; padding: 1.1rem 1.2rem; margin-bottom: 2rem; }
+        .at-a-glance h3 { color: var(--bookr-blue); font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem; letter-spacing: 0.01em; }
+        .at-a-glance ul { list-style: disc; margin: 0; padding-left: 1.15rem; color: var(--bookr-deep); }
+        .at-a-glance li + li { margin-top: 0.45rem; }
+        .media-grid { display: grid; gap: 1.5rem; }
+        .media-grid--standard .case-study-image { aspect-ratio: 4 / 3; }
+        .media-grid--wide .case-study-image { aspect-ratio: 16 / 10; }
+        .caption { color: #64748b; font-size: 0.9rem; text-align: center; margin-top: 0.6rem; margin-bottom: 1.2rem; }
+        .story-block + .story-block { margin-top: 1.8rem; }
+        .callout { background: rgba(44, 110, 163, 0.05); border: 1px solid rgba(44, 110, 163, 0.12); border-left: 4px solid var(--bookr-blue); border-radius: 0 18px 18px 0; padding: 1.1rem 1.2rem; }
+        .callout h3 { color: var(--bookr-blue); font-size: 1rem; font-weight: 600; margin-bottom: 0.55rem; }
+        @media screen and (max-width: 768px) {
+            .nav-shell { grid-template-columns: 1fr; justify-items: center; }
+            .nav-brand { justify-self: center; }
+            .project-header-shell::before { margin-bottom: 1rem; }
+        }
+        @media screen and (min-width: 768px) {
+            .media-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .media-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .media-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+    <nav class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 nav-shell">
+            <a href="index.html" class="nav-brand" aria-label="Matt Golino home">
+                <img src="images/VR_icon_2026.png" alt="Matt Golino VR logo">
+                <span class="nav-brand-text">Matt Golino</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="banner-hero relative h-[54vh] min-h-[420px] overflow-hidden mt-16">
+        <img src="images/Bookr/BookrCover.png" alt="Bookr cover image" class="absolute inset-0 w-full h-full object-cover object-center">
+    </section>
+
+    <section class="project-header pt-10 pb-8 px-6 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="project-header-shell max-w-4xl">
+                <p class="project-label text-sm font-semibold uppercase mb-4">Design Research Project</p>
+                <h1 class="project-title text-6xl md:text-8xl mb-6 tracking-tight font-light">Bookr</h1>
+                <p class="project-subtitle text-2xl md:text-3xl mb-8 font-light">A semester-long HCI design project focused on helping amateur musicians find and book gigs more effectively</p>
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">UX Research</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Mobile App Design</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Interaction Design</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">Usability Testing</span>
+                    <span class="project-tag px-4 py-2 text-sm rounded-full font-medium">UX Architecture</span>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 mb-8">
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Context</p><p class="project-meta text-lg">HCI Design Foundations</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Team</p><p class="project-meta text-lg">4 HCI Students</p></div>
+                    <div><p class="project-meta-label text-sm font-semibold uppercase tracking-wider mb-1">Outcome</p><p class="project-meta text-lg">Clickable Mobile Prototype</p></div>
+                </div>
+                <div class="at-a-glance">
+                    <h3>At a glance</h3>
+                    <ul>
+                        <li>Identified amateur musicians as a user group with a strong unmet need around finding and booking gigs</li>
+                        <li>Ran a full design process from early framing and research through concept development, prototyping, and usability testing</li>
+                        <li>Generated three divergent concepts before narrowing to the final Bookr direction</li>
+                        <li>Contributed heavily to UX architecture, whiteboarding, communication, and presentation work</li>
+                        <li>Helped carry the project through poster presentation, usability testing, and future iteration planning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+            <aside class="hidden lg:block lg:col-span-3">
+                <div class="sticky top-24">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wider">Contents</h3>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="toc-link block py-2 px-3 text-sm text-slate-600">Overview</a>
+                        <a href="#framing" class="toc-link block py-2 px-3 text-sm text-slate-600">Research and Framing</a>
+                        <a href="#concepts" class="toc-link block py-2 px-3 text-sm text-slate-600">Divergent Concepts</a>
+                        <a href="#bookr-direction" class="toc-link block py-2 px-3 text-sm text-slate-600">Bookr Direction</a>
+                        <a href="#testing" class="toc-link block py-2 px-3 text-sm text-slate-600">Prototype and Testing</a>
+                        <a href="#outcome" class="toc-link block py-2 px-3 text-sm text-slate-600">Outcome</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <article class="lg:col-span-9">
+                <section id="overview" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Overview</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">Bookr was a semester-long HCI design project focused on a specific opportunity: helping amateur musicians find and book gigs more effectively. Through research with musicians, our team identified gig booking as a persistent pain point and developed a mobile concept aimed at connecting musicians with venues more directly.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">The project took place in an HCI Design Foundations course, but its main value came from carrying a full design process from early framing and research through concept development, prototyping, and usability testing. Our work began with a broad problem space and ultimately narrowed to Bookr, a mobile app concept designed to make gig discovery and booking more accessible for amateur musicians.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">Through that process, we moved from early framing and research into three divergent concept directions, then narrowed to the final Bookr solution. That direction was eventually refined into a clickable prototype used for usability testing and future iteration planning.</p>
+                    <div class="callout">
+                        <h3>My Contribution</h3>
+                        <p class="text-lg text-slate-700 leading-relaxed">I contributed across the project, with particular ownership in UX architecture and communication-heavy work. That included guiding whiteboard sessions and group discussions, shaping the project structure, contributing heavily to report writing and agenda planning, sharing updates with our professor and TA, and presenting the final poster at an informal design showcase.</p>
+                    </div>
+                </section>
+
+                <section id="framing" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Research and Framing</h2>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">The project began with a broad problem-space brainstorm aimed at identifying an accessible user group with meaningful pain points. Through rapid whiteboard ideation, we generated more than 30 possible directions before narrowing to a single focus: amateur musicians who want to leverage their skills to earn money.</p>
+                        <div class="media-grid media-grid--2 media-grid--standard">
+                            <img src="images/Bookr/problem_space_brainstorm.jpg" alt="Problem space brainstorm whiteboard" class="case-study-image w-full">
+                            <img src="images/Bookr/problem_space_final.jpg" alt="Final Bookr problem space definition" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">The project began by turning a broad space of possible users and needs into a clearer problem definition we could actually research</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">Once we had that direction, we defined user attributes and design implications to better understand the physical, social, cognitive, and perceptual realities amateur musicians might bring to any product we designed.</p>
+                        <div class="media-grid media-grid--wide">
+                            <img src="images/Bookr/user_attributes.png" alt="User attributes and design implications for amateur musicians" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">User attributes helped us connect musician realities to more concrete design implications from the start</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">We then moved into primary research. Semi-structured interviews with musicians gave us a much clearer understanding of the overall process of being a performing musician, the tools and mental models they used, and the friction points that shaped their work. Most importantly, those interviews surfaced a recurring pain point around finding and booking gigs.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Bookr/interview_design.jpg" alt="Interview script outline for Bookr research" class="case-study-image w-full">
+                            <img src="images/Bookr/interview_sticky_note_2.jpg" alt="Sticky note synthesis of Bookr interviews" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Interviews helped us move from a broad interest in amateur musicians to a sharper understanding of the gig-booking problem</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">We complemented those interviews with task analysis, competitive analysis, and a wider survey. Together, these methods helped us map the gig-booking process step by step, assess what tools already existed, and gather broader directional signals from musicians beyond our interview set.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Bookr/task_analysis.png" alt="Task analysis of gig booking" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/survey_data_1.jpg" alt="Bookr survey results example" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/survey_data_2.jpg" alt="Bookr survey results second example" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/survey_research_question_brainstorm_1.jpg" alt="Survey question design brainstorming" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Task analysis, survey design, and broader quantitative responses helped us validate that the booking problem was real and still underserved</p>
+                    </div>
+                </section>
+
+                <section id="concepts" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Divergent Concepts</h2>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">After grounding ourselves in the problem space, we moved into divergent ideation. Working in rapid five-minute sketching bursts, we generated more than ten possible concepts that addressed different parts of the gig-booking experience. We eventually narrowed those ideas down to three distinct directions: Bookr, GigExplorer, and TourBuilder. These three directions represented meaningfully different ways of addressing the same problem: discovering gig opportunities, planning tours, or directly connecting musicians with venues.</p>
+                        <div class="media-grid media-grid--2 media-grid--standard">
+                            <img src="images/Bookr/duct_tape_sketch_1.png" alt="GigExplorer concept sketch" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/duct_tape_sketch_3.png" alt="Detailed GigExplorer sketch" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/duct_tape_sketch_2.png" alt="Shared concept sketch" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/duct_tape_sketch_4.png" alt="General Bookr app flow sketch" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">Rapid concept sketching helped us explore multiple solution directions before committing too early to one path</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">We then used long whiteboarding sessions to turn those early concepts into more complete flows, screen structures, and interaction models. This phase was especially important for me because I played a major role in driving the UX architecture discussions and translating abstract ideas into more concrete system behavior.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Bookr/whiteboarding_gigexplorer_1.jpg" alt="First GigExplorer whiteboarding session" class="case-study-image w-full">
+                            <img src="images/Bookr/whiteboarding_gigexplorer_2.png" alt="Second GigExplorer whiteboarding session" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/whiteboarding_bookr.jpg" alt="Whiteboarding Bookr flow" class="case-study-image w-full">
+                            <img src="images/Bookr/whiteboarding_tourbuilder.jpg" alt="Whiteboarding TourBuilder flow" class="case-study-image w-full">
+                        </div>
+                        <p class="caption">Whiteboarding helped us evolve the concepts into more specific user flows, screen logic, and interaction structures</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">From there, we created low-fidelity wireframes and storyboards for the divergent concepts so we could compare them more concretely and gather feedback on which direction had the most value and viability.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Bookr/wireframes_tourbuilder_1.png" alt="TourBuilder wireframes one" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/wireframes_tourbuilder_2.png" alt="TourBuilder wireframes two" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/wireframes_bookr.png" alt="Bookr wireframes" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/wireframes_gigexplorer.png" alt="GigExplorer wireframes" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">Low-fidelity wireframes gave us a way to compare the concepts based on structure and flow rather than visual polish</p>
+                        <div class="media-grid media-grid--2 media-grid--wide mt-6">
+                            <img src="images/Bookr/storyboard_tourbuilder.png" alt="TourBuilder storyboard" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/storyboard_bookr.png" alt="Bookr storyboard" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">Storyboards helped communicate how the divergent solutions might play out in real usage scenarios</p>
+                    </div>
+                </section>
+
+                <section id="bookr-direction" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Bookr Direction</h2>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">To make the concept comparison more rigorous, we documented the major design decisions behind each solution and tied them back to the research. This helped us evaluate the strengths and weaknesses of each direction more objectively instead of treating concept selection as a purely intuitive choice.</p>
+                        <div class="media-grid media-grid--wide">
+                            <img src="images/Bookr/design_decisions.png" alt="Bookr design decisions documentation" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">Documenting design decisions helped us connect each concept back to the research and compare the options more critically</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">After gathering outside concept feedback, we determined that the direction with the most value and development potential was Bookr: a mobile application focused on connecting musicians with venues and improving the overall gig-booking process. Bookr stood out because it addressed the most immediate and recurring friction surfaced in research: the challenge of actually finding and securing gigs, not just managing music activity more broadly.</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">Once that direction was chosen, we moved from the broader concept space into high-fidelity design. The Bookr mockups fleshed out the original wireframes, defined a visual style, and created a more coherent end-to-end mobile experience that could support testing.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Bookr/high_fidelity_mockups_1.png" alt="High-fidelity Bookr mockups group one" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/high_fidelity_mockups_2.png" alt="High-fidelity Bookr mockups group two" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">High-fidelity mockups brought the final Bookr direction into a more testable and communicable form</p>
+                    </div>
+                </section>
+
+                <section id="testing" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Prototype and Testing</h2>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">We made the high-fidelity mockups clickable in Adobe XD so Bookr could function as an interactive flow rather than a static presentation. That allowed us to move into more structured evaluation planning.</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">To prepare for usability testing, we created an evaluation plan with more than 25 usability specifications, along with scenario-driven tasks, post-test questions, and broader plans for future user and expert evaluation.</p>
+                        <div class="media-grid media-grid--wide">
+                            <img src="images/Bookr/usability_specs.png" alt="Bookr usability specifications" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">The evaluation plan translated the design into concrete usability questions and measurable criteria</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">We then ran usability testing with five participants, using realistic scenarios and a mix of quantitative and qualitative feedback collection. Participants worked through task-based flows, thought aloud while using the prototype, and completed follow-up questions after the sessions.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Bookr/usability_task_breakdown.png" alt="Bookr usability task breakdown" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/usability_questions.png" alt="Bookr post-test usability questions" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">Scenario design and follow-up questioning helped us pair observed behavior with more direct user reflection</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">After testing, we reviewed the recorded sessions together as a team and synthesized both the quantitative results and qualitative notes into a clearer plan for future iteration.</p>
+                        <div class="media-grid media-grid--2 media-grid--wide">
+                            <img src="images/Bookr/evaluation_data.png" alt="Quantitative usability testing results" class="case-study-image case-study-image--contain w-full">
+                            <img src="images/Bookr/evaluation_notes.png" alt="Qualitative evaluation notes" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">Reviewing both the metrics and the recorded sessions helped us identify where the concept still needed refinement</p>
+                    </div>
+
+                    <div class="story-block">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">We also created and presented a poster summarizing the project at a design showcase. That gave us a chance to communicate the work publicly and explain the reasoning behind the final concept and prototype.</p>
+                        <div class="media-grid media-grid--wide">
+                            <img src="images/Bookr/poster.png" alt="Bookr poster presentation" class="case-study-image case-study-image--contain w-full">
+                        </div>
+                        <p class="caption">The poster presentation became a concise way to communicate the project’s research, concept direction, and prototype work</p>
+                    </div>
+                </section>
+
+                <section id="outcome" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Outcome</h2>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">The project produced a coherent end-to-end concept, a tested prototype, and enough momentum to suggest life beyond the class itself, even though the semester ended before another full iteration cycle.</p>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">The project also showed signs of life beyond the class. We submitted Bookr to the Georgia Tech Create-X startup incubator and advanced through two rounds of discussion and interviews. In parallel, two of the musicians I interviewed had recently started their own record label and were interested in carrying the concept further toward implementation.</p>
+                    <div class="text-center pt-8 border-t border-slate-200 mt-10">
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <a href="#overview" class="project-button-secondary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to top</a>
+                            <a href="index.html" class="project-button-primary inline-flex items-center gap-2 px-6 py-3 rounded-full transition-colors">Back to portfolio</a>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </div>
+
+    <footer class="py-8 px-6 border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500 text-sm">Copyright 2026 Matt Golino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll(".content-section");
+        const tocLinks = document.querySelectorAll(".toc-link");
+        function updateActiveTOC() {
+            let current = "";
+            sections.forEach((section) => {
+                if (window.pageYOffset >= section.offsetTop - 150) current = section.getAttribute("id");
+            });
+            tocLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === "#" + current) link.classList.add("active");
+            });
+        }
+        window.addEventListener("scroll", updateActiveTOC);
+        updateActiveTOC();
+    </script>
+</body>
+</html>

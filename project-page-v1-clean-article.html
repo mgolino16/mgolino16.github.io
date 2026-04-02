@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenVR Case Study - Matt Golino</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .nav-shell {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: #0f172a;
+            text-decoration: none;
+            justify-self: start;
+            min-width: 0;
+        }
+
+        .nav-brand:hover {
+            color: #334155;
+        }
+
+        .nav-brand img {
+            height: 38px;
+            width: auto;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        .nav-brand-text {
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-shell {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+
+            .nav-brand {
+                justify-self: center;
+            }
+        }
+
+        /* Sticky TOC */
+        .toc-link {
+            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
+        }
+
+        .toc-link:hover {
+            border-left-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        .toc-link.active {
+            border-left-color: #0f172a;
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        /* Image styling */
+        .case-study-image {
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Section spacing */
+        .content-section {
+            scroll-margin-top: 100px;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+
+    <!-- Fixed Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 nav-shell">
+            <a href="index.html" class="nav-brand" aria-label="Matt Golino home">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span class="nav-brand-text">Back to Portfolio</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative h-[50vh] min-h-[400px] overflow-hidden mt-16">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100"></div>
+        <div class="absolute inset-0 opacity-30">
+            <img src="https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=1920" alt="ZenVR" class="w-full h-full object-cover">
+        </div>
+    </section>
+
+    <!-- Project Header -->
+    <section class="pt-16 pb-8 px-6 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="max-w-4xl">
+                <h1 class="text-7xl md:text-8xl mb-6 tracking-tight font-light text-slate-900">
+                    ZenVR
+                </h1>
+                <p class="text-3xl text-slate-700 mb-8 font-light">
+                    A VR meditation platform spanning HCI research, product design, startup leadership, and clinical collaboration
+                </p>
+                
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <span class="px-4 py-2 bg-blue-100 text-blue-700 text-sm rounded-full font-medium">VR Design</span>
+                    <span class="px-4 py-2 bg-purple-100 text-purple-700 text-sm rounded-full font-medium">UX Research</span>
+                    <span class="px-4 py-2 bg-green-100 text-green-700 text-sm rounded-full font-medium">Product Strategy</span>
+                    <span class="px-4 py-2 bg-orange-100 text-orange-700 text-sm rounded-full font-medium">Startup Leadership</span>
+                    <span class="px-4 py-2 bg-slate-100 text-slate-700 text-sm rounded-full font-medium">Unity Development</span>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8 mb-8">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Timeline</p>
+                        <p class="text-lg text-slate-900">2019 - Present</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Role</p>
+                        <p class="text-lg text-slate-900">CEO, Lead Designer, Researcher</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Platform</p>
+                        <p class="text-lg text-slate-900">Meta Quest, Steam VR</p>
+                    </div>
+                </div>
+
+                <a href="https://www.meta.com/experiences/4405820249480267/" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors">
+                    View on Meta Quest Store
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+            
+            <!-- Sticky Table of Contents (hidden on mobile) -->
+            <aside class="hidden lg:block lg:col-span-3">
+                <div class="sticky top-24">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wider">
+                        Contents
+                    </h3>
+                    <nav class="space-y-2">
+                        <a href="#overview" class="toc-link block py-2 px-3 text-sm text-slate-600">Overview</a>
+                        <a href="#intro" class="toc-link block py-2 px-3 text-sm text-slate-600">Introduction</a>
+                        <a href="#thesis" class="toc-link block py-2 px-3 text-sm text-slate-600">Master's Thesis</a>
+                        <a href="#formative" class="toc-link block py-2 px-3 text-sm text-slate-600 pl-6">Formative Research</a>
+                        <a href="#design" class="toc-link block py-2 px-3 text-sm text-slate-600 pl-6">Design & Prototyping</a>
+                        <a href="#evaluation" class="toc-link block py-2 px-3 text-sm text-slate-600 pl-6">Evaluation</a>
+                        <a href="#synthesis" class="toc-link block py-2 px-3 text-sm text-slate-600 pl-6">Data Synthesis</a>
+                        <a href="#startup" class="toc-link block py-2 px-3 text-sm text-slate-600">The Startup</a>
+                        <a href="#ui-redesign" class="toc-link block py-2 px-3 text-sm text-slate-600 pl-6">UI Redesign</a>
+                        <a href="#mr-walking" class="toc-link block py-2 px-3 text-sm text-slate-600 pl-6">MR Walking</a>
+                        <a href="#rowing" class="toc-link block py-2 px-3 text-sm text-slate-600 pl-6">Boat Rowing</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Article Content -->
+            <article class="lg:col-span-9">
+                
+                <!-- Introduction -->
+                <section id="intro" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">Introduction</h2>
+                    
+                    <!-- Embedded Video -->
+                    <div class="aspect-video mb-8 rounded-2xl overflow-hidden shadow-lg">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/M_LTh8Pmd7c" title="ZenVR Introduction" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+
+                    <div class="prose prose-lg max-w-none">
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">
+                            ZenVR, an immersive meditation training system born from my Master's thesis, transitioned from academic exploration to a thriving startup under my leadership. In my three-plus years as CEO, I've orchestrated the research, design, and development of the VR application, driving strategic decisions, presenting at conferences, pitching to investors, and managing diverse aspects of the business.
+                        </p>
+                        
+                        <p class="text-lg text-slate-700 leading-relaxed mb-6">
+                            From crafting proposals, managing budgets, and running crowdfunding campaigns to collaborating with academics and industry professionals, I've undertaken multifaceted responsibilities. Overseeing a multidisciplinary team of 30+ contributors, including developers, interns, advisors, and researchers, I've mentored numerous Master's student teams, published peer-reviewed research, and engaged in diverse tasks from voice acting and video editing to utilizing AI tools for prototyping designs and marketing.
+                        </p>
+
+                        <p class="text-lg text-slate-700 leading-relaxed mb-8">
+                            The ZenVR app is now live on the Meta Quest Store and Steam VR, and is the highest-rated meditation app on the Quest platform.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Divider -->
+                <hr class="border-slate-200 my-16">
+
+                <!-- Master's Thesis -->
+                <section id="thesis" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">The Master's Thesis Project</h2>
+                    
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">
+                        ZenVR began as my Master's thesis project in the Georgia Tech MS-HCI program. At a high level we followed a very rigorous UX research and design process. We began with formative research methods, that guided the design creation, I built a full Unity prototype, we conducted heuristic evaluations, and then ran a six week longitudinal study with 150 visits. It culminated in statistically significant improvements in user mental health metrics and a peer-reviewed publication at ACM's CHI conference in 2022.
+                    </p>
+
+                    <a href="https://dl.acm.org/doi/abs/10.1145/3491102.3502035" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors mb-8">
+                        Read Published Paper
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                    </a>
+
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200" alt="Research Overview" class="case-study-image w-full mb-4">
+                    <p class="text-sm text-slate-500 text-center mb-12">Overview of the Project Timeline</p>
+                </section>
+
+                <!-- Formative Research -->
+                <section id="formative" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Formative Research</h3>
+                    
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">
+                        To inform the initial design of ZenVR, we conducted research with meditation teachers and students, both novice and experts. Our goal was to understand the learning journey, the natural stumbling blocks people encounter, what scaffolds real teachers use to aid with these challenges, and generative ideas on what we might want to include in the design.
+                    </p>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+                        <h4 class="font-semibold text-slate-900 mb-2">My Contribution</h4>
+                        <p class="text-slate-700">
+                            I actively wrote interview scripts and conducted semi-structured interviews with all groups. I wrote and edited questions on our survey. And I was heavily involved in the synthesis portion of the work, spending dozens of hours affinity mapping and organizing findings into design implications, sketches, and curriculum content.
+                        </p>
+                    </div>
+
+                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=1200" alt="Affinity Mapping" class="case-study-image w-full mb-4">
+                    <p class="text-sm text-slate-500 text-center mb-8">Processing qualitative and quantitative research with physical Affinity Mapping</p>
+
+                    <img src="https://images.unsplash.com/photo-1542626991-cbc4e32524cc?w=1200" alt="Digital Affinity Map" class="case-study-image w-full mb-4">
+                    <p class="text-sm text-slate-500 text-center mb-12">Switched to Miro board for better organization with large data sets</p>
+                </section>
+
+                <!-- Design & Prototyping -->
+                <section id="design" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Design & Prototyping</h3>
+                    
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">
+                        Taking all the findings synthesized in the formative research phase, we created scripts for eight meditation classes, recorded audio, and built it into a functional VR prototype for evaluation.
+                    </p>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+                        <h4 class="font-semibold text-slate-900 mb-2">My Contribution</h4>
+                        <p class="text-slate-700">
+                            I wrote all of the scripts for the lessons. I voiced, recorded, and edited the audio for each lesson. I built the Unity environment, integrated VR, and constructed each lesson with motion capture animation and other effects.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-12">
+                        <div>
+                            <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600" alt="Design Sketches" class="case-study-image w-full mb-4">
+                            <p class="text-sm text-slate-500 text-center">Early design sketches</p>
+                        </div>
+                        <div>
+                            <img src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=600" alt="VR Prototype" class="case-study-image w-full mb-4">
+                            <p class="text-sm text-slate-500 text-center">VR prototype development</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Evaluation -->
+                <section id="evaluation" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Prototype Evaluation</h3>
+                    
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">
+                        At this phase we conducted heuristic evaluations with meditation and VR experts, validating form, function, and content of the first prototype. From this feedback we made rapid iterations on the prototype, then kicked off our six week longitudinal study with 15 participants coming in twice a week.
+                    </p>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+                        <h4 class="font-semibold text-slate-900 mb-2">My Contribution</h4>
+                        <p class="text-slate-700">
+                            I designed the heuristic evaluation metrics for each group, administered heuristic evaluations, administered about half of the study visits, and actively took feedback gathered in the early lessons and implemented it in the later lessons for an extremely rapid design testing cycle.
+                        </p>
+                    </div>
+
+                    <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200" alt="User Testing" class="case-study-image w-full mb-4">
+                    <p class="text-sm text-slate-500 text-center mb-12">Six-week longitudinal study with 150 total visits</p>
+                </section>
+
+                <!-- Data Synthesis -->
+                <section id="synthesis" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Data Synthesis</h3>
+                    
+                    <p class="text-lg text-slate-700 leading-relaxed mb-6">
+                        The final phase of the project involved evaluating and synthesizing both qualitative and quantitative data from 150 study visits, drawing out design implications that would inform the next phase of ZenVR as a startup, and crafting a final presentation and publication.
+                    </p>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 rounded-r-lg">
+                        <h4 class="font-semibold text-slate-900 mb-2">My Contribution</h4>
+                        <p class="text-slate-700">
+                            I spent dozens of hours organizing data in massive affinity maps, then drawing conclusions out, section by section. I crafted much of the final presentation and contributed to writing our published paper.
+                        </p>
+                    </div>
+
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200" alt="Data Analysis" class="case-study-image w-full mb-4">
+                    <p class="text-sm text-slate-500 text-center mb-12">Statistically significant improvements in mental health metrics</p>
+                </section>
+
+                <!-- Divider -->
+                <hr class="border-slate-200 my-16">
+
+                <!-- The Startup -->
+                <section id="startup" class="content-section mb-16">
+                    <h2 class="text-4xl font-light mb-6 text-slate-900">The Startup</h2>
+                    
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">
+                        After the conclusion of the thesis project I was faced with a choice: to let this impactful work die in academia, or to take it into the world to help people. I chose the latter. Launching the company through the CreateX startup accelerator in Summer 2020. Since then, my work as CEO has been extremely multi-disciplinary, but always maintaining strong hands-on guidance of the design and development of the application.
+                    </p>
+                </section>
+
+                <!-- UI Redesign -->
+                <section id="ui-redesign" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">User Interface Redesign</h3>
+                    
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">
+                        A very recent project I led within ZenVR was a redesign and overhaul of our main menu UI. The objective was to create a more visual, easy to navigate, and enticing menu system - while also highlighting user progression through the curriculum in an encouraging way.
+                    </p>
+
+                    <div class="mb-8">
+                        <h4 class="text-xl font-medium text-slate-900 mb-4">Before: Original UI</h4>
+                        <img src="https://images.unsplash.com/photo-1533073526757-2c8ca1df9f1c?w=1200" alt="Old UI" class="case-study-image w-full mb-4">
+                        <p class="text-slate-600 mb-6">The old UI was simple but did not entice users or showcase the content they would experience. Sub-menus were text-heavy and needed an overhaul.</p>
+                    </div>
+
+                    <div class="mb-8">
+                        <h4 class="text-xl font-medium text-slate-900 mb-4">Iterative Design Process</h4>
+                        <img src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=1200" alt="Design Iterations" class="case-study-image w-full mb-4">
+                        <p class="text-slate-600 mb-6">Extensive brainstorming and iterative design with our team</p>
+                    </div>
+
+                    <div class="mb-12">
+                        <h4 class="text-xl font-medium text-slate-900 mb-4">After: New UI Implementation</h4>
+                        <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200" alt="New UI" class="case-study-image w-full mb-4">
+                        <p class="text-slate-600">The new UI features enticing previews, 1-click access, visual progress tracking, and unlockable bonsai trees for each completed lesson.</p>
+                    </div>
+                </section>
+
+                <!-- MR Walking -->
+                <section id="mr-walking" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Mixed Reality Walking Meditation</h3>
+                    
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">
+                        With the launch of the Quest 3 and upcoming Apple Vision Pro, we envisioned what sorts of experiences we could create that would be relevant to the overall vision of the application. As the lead designer at ZenVR, I worked hand-in-hand with one of our student intern designers to craft the interaction designs and overall experience narrative, utilizing AI to prototype and communicate complex MR interaction concepts.
+                    </p>
+
+                    <img src="https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=1200" alt="MR Walking Experience" class="case-study-image w-full mb-4">
+                    <p class="text-sm text-slate-500 text-center mb-12">AI-assisted prototyping for mixed reality walking meditation</p>
+                </section>
+
+                <!-- Boat Rowing -->
+                <section id="rowing" class="content-section mb-16">
+                    <h3 class="text-3xl font-light mb-6 text-slate-900">Boat Rowing Meditation</h3>
+                    
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8">
+                        Designing and building the ZenVR Boat Rowing Meditation experience has been a long project, spanning a semester long student design project, a design intern, and two development interns. I have overseen and guided the design and development of this project from the beginning.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-12">
+                        <div>
+                            <img src="https://images.unsplash.com/photo-1506260408121-e353d10b87c7?w=600" alt="Boat Rowing Mood Board" class="case-study-image w-full mb-4">
+                            <p class="text-sm text-slate-500 text-center">Mood and vision board</p>
+                        </div>
+                        <div>
+                            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600" alt="Experience Design" class="case-study-image w-full mb-4">
+                            <p class="text-sm text-slate-500 text-center">User flow mapping</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Back to Top -->
+                <div class="text-center pt-8 border-t border-slate-200">
+                    <a href="#" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                        </svg>
+                        Back to Top
+                    </a>
+                </div>
+
+            </article>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-slate-200 bg-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <a href="index.html" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors mb-6">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to All Projects
+            </a>
+            <p class="text-slate-500 text-sm mt-6">© 2026 Matt Golino. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for TOC -->
+    <script>
+        // Update active TOC link on scroll
+        const sections = document.querySelectorAll('.content-section');
+        const tocLinks = document.querySelectorAll('.toc-link');
+
+        function updateActiveTOC() {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveTOC);
+        updateActiveTOC();
+    </script>
+
+</body>
+</html>

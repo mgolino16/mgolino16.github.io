@@ -216,6 +216,52 @@
             background: #cbd5e1;
             color: #0f172a;
         }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 100;
+        }
+
+        .modal-backdrop[hidden] {
+            display: none;
+        }
+
+        .modal-card {
+            width: min(100%, 28rem);
+            background: #fff;
+            color: #0f172a;
+            border-radius: 1.25rem;
+            box-shadow: 0 30px 80px rgba(15, 23, 42, 0.24);
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            padding: 1.5rem;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.9rem;
+            font-size: 1rem;
+            color: #0f172a;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.12);
+        }
+
+        .modal-error {
+            min-height: 1.25rem;
+        }
     </style>
 </head>
 <body class="bg-white text-slate-900">
@@ -324,7 +370,10 @@
                                 <p class="text-sm text-slate-500 mt-2">2024 - 2026</p>
                             </div>
                             <div class="card-actions">
-                                <a href="zenni-feature.html" class="card-action-primary">View Case Study</a>
+                                <a href="zenni-feature.html" class="card-action-pill">View Case Study</a>
+                                <!-- Swap in the below if want to have password protection on the Zenni page-->
+                                <!-- <button type="button" id="zenni-case-study-trigger" class="card-action-primary">View Case Study</button> -->
+                                <!-- design123 -->
                             </div>
                         </div>
                         <p class="text-slate-600 mb-4">Senior product design work spanning e-commerce, AI-assisted experiences, research, and immersive applications.</p>
@@ -512,8 +561,74 @@
         </div>
     </footer>
 
+    <div id="zenni-password-modal" class="modal-backdrop" hidden>
+        <div
+            class="modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="zenni-password-title"
+            aria-describedby="zenni-password-description"
+        >
+            <div class="flex items-start justify-between gap-4 mb-5">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 mb-2">Protected Link</p>
+                    <h2 id="zenni-password-title" class="text-2xl font-medium">Enter Password</h2>
+                </div>
+                <button
+                    type="button"
+                    id="zenni-password-close"
+                    class="text-slate-400 hover:text-slate-700 transition-colors"
+                    aria-label="Close password modal"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <p id="zenni-password-description" class="text-slate-600 leading-relaxed mb-5">
+                This case study is password protected due to proprietary work examples. Enter the password to continue to the Zenni Optical page.
+            </p>
+
+            <form id="zenni-password-form" class="space-y-4">
+                <div>
+                    <label for="zenni-password-input" class="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                    <input
+                        id="zenni-password-input"
+                        class="modal-input"
+                        type="password"
+                        name="password"
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <p id="zenni-password-error" class="modal-error text-sm text-red-600" aria-live="polite"></p>
+
+                <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-1">
+                    <button
+                        type="button"
+                        id="zenni-password-cancel"
+                        class="px-5 py-3 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        class="px-5 py-3 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition-colors"
+                    >
+                        Continue
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- JavaScript for smooth scrolling and active nav -->
     <script>
+        const ZENNI_UNLOCK_KEY = "zenniUnlocked";
+        const ZENNI_PASSWORD = "design123";
+        const ZENNI_DESTINATION = "zenni-feature.html";
+
         function scrollToSection(sectionId) {
             const element = document.getElementById(sectionId);
             if (element) {
@@ -554,6 +669,85 @@
                 const targetId = link.getAttribute("href").substring(1);
                 scrollToSection(targetId);
             });
+        });
+
+        const zenniTrigger = document.getElementById("zenni-case-study-trigger");
+        const zenniModal = document.getElementById("zenni-password-modal");
+        const zenniClose = document.getElementById("zenni-password-close");
+        const zenniCancel = document.getElementById("zenni-password-cancel");
+        const zenniForm = document.getElementById("zenni-password-form");
+        const zenniInput = document.getElementById("zenni-password-input");
+        const zenniError = document.getElementById("zenni-password-error");
+        let lastZenniFocus = null;
+
+        function isZenniUnlocked() {
+            return sessionStorage.getItem(ZENNI_UNLOCK_KEY) === "true";
+        }
+
+        function goToZenniPage() {
+            window.location.href = ZENNI_DESTINATION;
+        }
+
+        function resetZenniModalState() {
+            zenniError.textContent = "";
+            zenniForm.reset();
+        }
+
+        function openZenniModal() {
+            lastZenniFocus = document.activeElement;
+            resetZenniModalState();
+            zenniModal.hidden = false;
+            document.body.style.overflow = "hidden";
+            window.setTimeout(() => {
+                zenniInput.focus();
+            }, 0);
+        }
+
+        function closeZenniModal() {
+            zenniModal.hidden = true;
+            document.body.style.overflow = "";
+            resetZenniModalState();
+            if (lastZenniFocus && typeof lastZenniFocus.focus === "function") {
+                lastZenniFocus.focus();
+            }
+        }
+
+        zenniTrigger.addEventListener("click", () => {
+            if (isZenniUnlocked()) {
+                goToZenniPage();
+                return;
+            }
+            openZenniModal();
+        });
+
+        zenniClose.addEventListener("click", closeZenniModal);
+        zenniCancel.addEventListener("click", closeZenniModal);
+
+        zenniModal.addEventListener("click", (event) => {
+            if (event.target === zenniModal) {
+                closeZenniModal();
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (!zenniModal.hidden && event.key === "Escape") {
+                closeZenniModal();
+            }
+        });
+
+        zenniForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            if (zenniInput.value === ZENNI_PASSWORD) {
+                sessionStorage.setItem(ZENNI_UNLOCK_KEY, "true");
+                closeZenniModal();
+                goToZenniPage();
+                return;
+            }
+
+            zenniError.textContent = "Incorrect password. Please try again.";
+            zenniInput.select();
+            zenniInput.focus();
         });
     </script>
 
